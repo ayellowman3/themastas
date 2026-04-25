@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { ScorecardData } from '../lib/tournament';
 
@@ -38,10 +38,55 @@ export default function Scorecard({
   const [team2Scores, setTeam2Scores] = useState<Record<number, string>>(initialTeam2Scores);
   const [team1PlayerScores, setTeam1PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam1PlayerScores);
   const [team2PlayerScores, setTeam2PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam2PlayerScores);
+  const [hasLoadedInitialScores, setHasLoadedInitialScores] = useState(
+    Object.keys(initialTeam1Scores).length > 0 ||
+      Object.keys(initialTeam2Scores).length > 0 ||
+      Object.keys(initialTeam1PlayerScores).length > 0 ||
+      Object.keys(initialTeam2PlayerScores).length > 0
+  );
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSingleNine = data.holes.length <= 9;
+
+  useEffect(() => {
+    if (!pairingId || hasLoadedInitialScores) return;
+
+    let isCancelled = false;
+
+    const loadScores = async () => {
+      try {
+        const response = await fetch(`/api/scorecards?pairingId=${encodeURIComponent(pairingId)}`, {
+          method: 'GET',
+          cache: 'no-store',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load saved scores');
+        }
+
+        const payload = await response.json();
+
+        if (isCancelled) return;
+
+        setTeam1Scores(payload.team1Scores || {});
+        setTeam2Scores(payload.team2Scores || {});
+        setTeam1PlayerScores(payload.team1PlayerScores || {});
+        setTeam2PlayerScores(payload.team2PlayerScores || {});
+        setHasLoadedInitialScores(true);
+      } catch {
+        if (!isCancelled) {
+          setSaveState('error');
+        }
+      }
+    };
+
+    loadScores();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [hasLoadedInitialScores, pairingId]);
 
   const queueScoreSave = (payload: {
     side: 'team1' | 'team2';

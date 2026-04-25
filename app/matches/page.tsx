@@ -1,7 +1,6 @@
 import PageContainer from '../../components/PageContainer';
 import SectionCard from '../../components/SectionCard';
 import Scorecard from '../../components/Scorecard';
-import { getAllPairingScores } from '../../lib/score-db';
 import {
   MATCHES,
   formatMatchPoints,
@@ -15,11 +14,7 @@ import {
   TEAM2_PLAYERS,
 } from '../../lib/tournament';
 
-export const dynamic = 'force-dynamic';
-
-export default async function Matches() {
-  const persistedScores = getAllPairingScores();
-
+export default function Matches() {
   return (
     <PageContainer>
       <SectionCard title="Matches">
@@ -100,7 +95,6 @@ export default async function Matches() {
                   {match.pairings.map((pairing, idx) => {
                     const team1Players = getPairingPlayers(pairing.team1, TEAM1_PLAYERS);
                     const team2Players = getPairingPlayers(pairing.team2, TEAM2_PLAYERS);
-                    const initialScores = persistedScores[pairing.id];
 
                     return (
                       <div key={pairing.id} className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
@@ -166,10 +160,6 @@ export default async function Matches() {
                               team2Players={team2Players}
                               team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players)}
                               team2PlayerHandicaps={getPlayerNineHoleHandicaps(team2Players)}
-                              initialTeam1Scores={initialScores?.team1Scores}
-                              initialTeam2Scores={initialScores?.team2Scores}
-                              initialTeam1PlayerScores={initialScores?.team1PlayerScores}
-                              initialTeam2PlayerScores={initialScores?.team2PlayerScores}
                             />
                           </div>
                         </div>
