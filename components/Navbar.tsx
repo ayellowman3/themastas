@@ -15,6 +15,7 @@ export default function Navbar() {
           <Link href="/matches" className="hover:underline">Matches</Link>
           <Link href="/rules" className="hover:underline">Rules</Link>
           <Link href="/gallery" className="hover:underline">Gallery</Link>
+          <Link href="/scorecards" className="hover:underline">Scorecards</Link>
         </div>
         <div className="md:hidden">
           {/* Mobile menu button - for simplicity, just show links */}
@@ -26,6 +27,7 @@ export default function Navbar() {
             <Link href="/matches" className="hover:underline">Matches</Link>
             <Link href="/rules" className="hover:underline">Rules</Link>
             <Link href="/gallery" className="hover:underline">Gallery</Link>
+            <Link href="/scorecards" className="hover:underline">Scorecards</Link>
           </div>
         </div>
       </div>

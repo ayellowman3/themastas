@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import PageContainer from '../components/PageContainer';
 import SectionCard from '../components/SectionCard';
+import ProgressBar from '../components/ProgressBar';
 
 export default function Home() {
   return (
@@ -26,6 +27,20 @@ export default function Home() {
             See Schedule
           </Link>
         </div>
+      </SectionCard>
+
+      <SectionCard title="Points Chart">
+        <p className="mb-4">
+          To win the Mastas Cup, a team needs to accumulate <strong>13.75 points</strong> out of a total of <strong>27 points</strong> available.
+        </p>
+        <p>
+          Points are awarded based on match results throughout the tournament.
+        </p>
+      </SectionCard>
+
+      <SectionCard title="Current Standings">
+        <ProgressBar label="Team 1" current={0} total={27} />
+        <ProgressBar label="Team 2" current={0} total={27} />
       </SectionCard>
     </PageContainer>
   );
