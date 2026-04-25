@@ -1,15 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-interface ScorecardData {
-  holes: number[];
-  yds: number[];
-  par: number[];
-  hcp: number[];
-}
+import type { ScorecardData } from '../lib/tournament';
 
 interface ScorecardProps {
+  pairingId?: string;
   courseName: string;
   data: ScorecardData;
   format?: 'best-ball' | 'scramble';
@@ -17,9 +13,14 @@ interface ScorecardProps {
   team2Players?: string[];
   team1PlayerHandicaps?: Record<string, number>;
   team2PlayerHandicaps?: Record<string, number>;
+  initialTeam1Scores?: Record<number, string>;
+  initialTeam2Scores?: Record<number, string>;
+  initialTeam1PlayerScores?: Record<string, Record<number, string>>;
+  initialTeam2PlayerScores?: Record<string, Record<number, string>>;
 }
 
 export default function Scorecard({
+  pairingId,
   courseName,
   data,
   format = 'scramble',
@@ -27,20 +28,67 @@ export default function Scorecard({
   team2Players = [],
   team1PlayerHandicaps = {},
   team2PlayerHandicaps = {},
+  initialTeam1Scores = {},
+  initialTeam2Scores = {},
+  initialTeam1PlayerScores = {},
+  initialTeam2PlayerScores = {},
 }: ScorecardProps) {
   const isScramble = format === 'scramble';
-  const [team1Scores, setTeam1Scores] = useState<Record<number, string>>({});
-  const [team2Scores, setTeam2Scores] = useState<Record<number, string>>({});
-  const [team1PlayerScores, setTeam1PlayerScores] = useState<Record<string, Record<number, string>>>({});
-  const [team2PlayerScores, setTeam2PlayerScores] = useState<Record<string, Record<number, string>>>({});
+  const [team1Scores, setTeam1Scores] = useState<Record<number, string>>(initialTeam1Scores);
+  const [team2Scores, setTeam2Scores] = useState<Record<number, string>>(initialTeam2Scores);
+  const [team1PlayerScores, setTeam1PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam1PlayerScores);
+  const [team2PlayerScores, setTeam2PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam2PlayerScores);
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const saveResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSingleNine = data.holes.length <= 9;
+
+  const queueScoreSave = (payload: {
+    side: 'team1' | 'team2';
+    hole: number;
+    score: string;
+    playerName?: string;
+  }) => {
+    if (!pairingId) return;
+
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+
+    setSaveState('saving');
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const parsedScore = payload.score.trim() === '' ? null : Number(payload.score);
+
+        await fetch('/api/scorecards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            pairingId,
+            side: payload.side,
+            hole: payload.hole,
+            playerName: payload.playerName ?? null,
+            score: Number.isFinite(parsedScore) ? parsedScore : null,
+          }),
+        });
+
+        setSaveState('saved');
+        if (saveResetRef.current) clearTimeout(saveResetRef.current);
+        saveResetRef.current = setTimeout(() => setSaveState('idle'), 1500);
+      } catch {
+        setSaveState('error');
+      }
+    }, 250);
+  };
 
   const handleTeam1ScoreChange = (hole: number, value: string) => {
     setTeam1Scores({ ...team1Scores, [hole]: value });
+    queueScoreSave({ side: 'team1', hole, score: value });
   };
 
   const handleTeam2ScoreChange = (hole: number, value: string) => {
     setTeam2Scores({ ...team2Scores, [hole]: value });
+    queueScoreSave({ side: 'team2', hole, score: value });
   };
 
   const handleTeam1PlayerScoreChange = (playerName: string, hole: number, value: string) => {
@@ -48,6 +96,7 @@ export default function Scorecard({
       ...team1PlayerScores,
       [playerName]: { ...(team1PlayerScores[playerName] || {}), [hole]: value },
     });
+    queueScoreSave({ side: 'team1', hole, score: value, playerName });
   };
 
   const handleTeam2PlayerScoreChange = (playerName: string, hole: number, value: string) => {
@@ -55,6 +104,7 @@ export default function Scorecard({
       ...team2PlayerScores,
       [playerName]: { ...(team2PlayerScores[playerName] || {}), [hole]: value },
     });
+    queueScoreSave({ side: 'team2', hole, score: value, playerName });
   };
 
   const frontNine = {
@@ -80,17 +130,17 @@ export default function Scorecard({
   const totalYards = frontYards + backYards;
 
   const inputClassName =
-    'h-8 w-10 rounded-lg border border-white/70 bg-white/90 text-center text-xs font-semibold text-slate-700 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-800/90 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-900';
+    'h-7 w-9 rounded-md border border-white/70 bg-white/90 text-center text-[11px] font-semibold text-slate-700 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 sm:h-8 sm:w-10 sm:rounded-lg sm:text-xs dark:border-slate-600 dark:bg-slate-800/90 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-900';
   const labelBaseClassName =
-    'border px-2 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.18em]';
+    'sticky left-0 z-10 border px-2 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.18em]';
   const team1LabelClassName = `${labelBaseClassName} bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-200`;
   const team2LabelClassName = `${labelBaseClassName} bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-200`;
   const statCellClassName =
-    'border px-2 py-2 text-center text-[11px] font-semibold text-slate-600 dark:text-slate-300';
-  const summaryOutClassName = 'border px-2 py-2 text-center text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-200';
-  const summaryInClassName = 'border px-2 py-2 text-center text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-200';
-  const summaryTotalClassName = 'border px-2 py-2 text-center text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-200';
-  const emptySummaryClassName = 'border px-2 py-2 bg-slate-50 dark:bg-slate-800/80';
+    'border px-1.5 py-2 text-center text-[10px] font-semibold text-slate-600 sm:px-2 sm:text-[11px] dark:text-slate-300';
+  const summaryOutClassName = 'border px-1.5 py-2 text-center text-[10px] font-semibold bg-sky-50 text-sky-700 sm:px-2 sm:text-[11px] dark:bg-sky-950/70 dark:text-sky-200';
+  const summaryInClassName = 'border px-1.5 py-2 text-center text-[10px] font-semibold bg-emerald-50 text-emerald-700 sm:px-2 sm:text-[11px] dark:bg-emerald-950/70 dark:text-emerald-200';
+  const summaryTotalClassName = 'border px-1.5 py-2 text-center text-[10px] font-semibold bg-amber-50 text-amber-700 sm:px-2 sm:text-[11px] dark:bg-amber-950/70 dark:text-amber-200';
+  const emptySummaryClassName = 'border px-1.5 py-2 bg-slate-50 sm:px-2 dark:bg-slate-800/80';
   const allPlayerHandicaps = [...team1Players, ...team2Players]
     .map((player) => team1PlayerHandicaps[player] ?? team2PlayerHandicaps[player])
     .filter((handicap): handicap is number => handicap !== undefined);
@@ -124,21 +174,40 @@ export default function Scorecard({
 
     return (
       <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/60">
-        <div className="flex items-center justify-between border-b border-slate-200/70 bg-gradient-to-r from-slate-50 via-white to-emerald-50 px-4 py-3 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/40">
+        <div className="flex flex-col gap-2 border-b border-slate-200/70 bg-gradient-to-r from-slate-50 via-white to-emerald-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/40">
           <div>
             <p className="text-sm font-semibold text-slate-900 dark:text-white">{getSectionTitle(isBack)}</p>
             <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{isScramble ? 'Team scoring' : 'Player scoring'}</p>
           </div>
-          <div className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white dark:bg-slate-100 dark:text-slate-900">
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {pairingId && (
+              <span
+                className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
+                  saveState === 'error'
+                    ? 'text-rose-500 dark:text-rose-300'
+                    : saveState === 'saved'
+                      ? 'text-emerald-600 dark:text-emerald-300'
+                      : 'text-slate-400'
+                }`}
+              >
+                {saveState === 'saving' ? 'Saving' : saveState === 'saved' ? 'Saved' : saveState === 'error' ? 'Save failed' : 'Auto save'}
+              </span>
+            )}
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:hidden">
+              Swipe table
+            </span>
+            <div className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white dark:bg-slate-100 dark:text-slate-900">
             {isScramble ? 'Scramble' : 'Best Ball'}
+            </div>
           </div>
         </div>
-        <table className="w-full min-w-[760px] border-collapse text-xs">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] border-collapse text-xs sm:min-w-[760px]">
         <thead>
           <tr className="bg-slate-100/90 text-slate-600 dark:bg-slate-800 dark:text-slate-200">
-            <th className="border px-2 py-2 text-left text-[11px] uppercase tracking-[0.18em]">Hole</th>
+            <th className="sticky left-0 z-20 min-w-[88px] border bg-slate-100/95 px-2 py-2 text-left text-[10px] uppercase tracking-[0.14em] sm:min-w-[110px] sm:text-[11px] sm:tracking-[0.18em] dark:bg-slate-800/95">Hole</th>
             {nine.holes.map((hole) => (
-              <th key={hole} className="border px-2 py-2 text-center text-[11px]">{hole}</th>
+              <th key={hole} className="border px-1.5 py-2 text-center text-[10px] sm:px-2 sm:text-[11px]">{hole}</th>
             ))}
             <th className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{scoreColumnLabel}</th>
             {isBack && <th className={summaryTotalClassName}>Tot</th>}
@@ -301,6 +370,7 @@ export default function Scorecard({
           </tr>
         </tbody>
       </table>
+      </div>
       </div>
     );
   };
