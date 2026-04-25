@@ -67,6 +67,18 @@ function formatPlayers(playerString: string, teamPlayers: Record<string, string>
     .join(' & ');
 }
 
+function getPairingPlayers(playerString: string, teamPlayers: Record<string, string>): string[] {
+  if (playerString === 'TBD') return [];
+
+  return playerString
+    .split(' & ')
+    .map((p) => {
+      const num = p.trim().replace('#', '');
+      return teamPlayers[num];
+    })
+    .filter(Boolean);
+}
+
 export default function Matches() {
   const matches = [
     {
@@ -192,8 +204,8 @@ export default function Matches() {
                         courseName={`${match.course} - ${match.nine}`} 
                         data={getScorecard(match.course, match.nine)}
                         format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
-                        team1Players={[TEAM1_PLAYERS['1'], TEAM1_PLAYERS['2'], TEAM1_PLAYERS['3'], TEAM1_PLAYERS['4'], TEAM1_PLAYERS['5'], TEAM1_PLAYERS['6']]}
-                        team2Players={[TEAM2_PLAYERS['1'], TEAM2_PLAYERS['2'], TEAM2_PLAYERS['3'], TEAM2_PLAYERS['4'], TEAM2_PLAYERS['5'], TEAM2_PLAYERS['6']]}
+                        team1Players={getPairingPlayers(pairing.team1, TEAM1_PLAYERS)}
+                        team2Players={getPairingPlayers(pairing.team2, TEAM2_PLAYERS)}
                       />
                     </div>
                   </div>
