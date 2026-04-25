@@ -99,6 +99,10 @@ function formatMatchPoints(score: number | null) {
   return `${score} pt`;
 }
 
+function isPairingComplete(pairing: { team1Score: number | null; team2Score: number | null; completed?: boolean }) {
+  return pairing.completed === true && pairing.team1Score !== null && pairing.team2Score !== null;
+}
+
 export default function Matches() {
   const matches = [
     {
@@ -279,10 +283,10 @@ export default function Matches() {
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <span className="rounded-full bg-sky-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-800 dark:bg-sky-950/80 dark:text-sky-200">
-                            Team 1: {formatMatchPoints(pairing.team1Score)}
+                            Team 1: {isPairingComplete(pairing) ? formatMatchPoints(pairing.team1Score) : 'Pending'}
                           </span>
                           <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-200">
-                            Team 2: {formatMatchPoints(pairing.team2Score)}
+                            Team 2: {isPairingComplete(pairing) ? formatMatchPoints(pairing.team2Score) : 'Pending'}
                           </span>
                         </div>
                       </div>
