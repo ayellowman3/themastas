@@ -15,9 +15,19 @@ interface ScorecardProps {
   format?: 'best-ball' | 'scramble';
   team1Players?: string[];
   team2Players?: string[];
+  team1PlayerHandicaps?: Record<string, number>;
+  team2PlayerHandicaps?: Record<string, number>;
 }
 
-export default function Scorecard({ courseName, data, format = 'scramble', team1Players = [], team2Players = [] }: ScorecardProps) {
+export default function Scorecard({
+  courseName,
+  data,
+  format = 'scramble',
+  team1Players = [],
+  team2Players = [],
+  team1PlayerHandicaps = {},
+  team2PlayerHandicaps = {},
+}: ScorecardProps) {
   const isScramble = format === 'scramble';
   const [team1Scores, setTeam1Scores] = useState<Record<number, string>>({});
   const [team2Scores, setTeam2Scores] = useState<Record<number, string>>({});
@@ -81,14 +91,36 @@ export default function Scorecard({ courseName, data, format = 'scramble', team1
   const summaryInClassName = 'border px-2 py-2 text-center text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-200';
   const summaryTotalClassName = 'border px-2 py-2 text-center text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-200';
   const emptySummaryClassName = 'border px-2 py-2 bg-slate-50 dark:bg-slate-800/80';
+  const allPlayerHandicaps = [...team1Players, ...team2Players]
+    .map((player) => team1PlayerHandicaps[player] ?? team2PlayerHandicaps[player])
+    .filter((handicap): handicap is number => handicap !== undefined);
+  const lowestMatchHandicap = allPlayerHandicaps.length > 0 ? Math.min(...allPlayerHandicaps) : 0;
 
   const getSectionTitle = (isBack: boolean) => {
     if (isSingleNine) return courseName;
     return isBack ? `${courseName} · Back Nine` : `${courseName} · Front Nine`;
   };
 
+  const getHoleStrokeRanks = (nine: typeof frontNine) => {
+    const sortedHcp = [...nine.hcp].sort((a, b) => a - b);
+    const rankMap = new Map<number, number>();
+    sortedHcp.forEach((hcp, index) => {
+      rankMap.set(hcp, index + 1);
+    });
+    return rankMap;
+  };
+
+  const getPlayerHandicap = (playerName: string) => team1PlayerHandicaps[playerName] ?? team2PlayerHandicaps[playerName];
+
+  const getStrokesReceived = (playerName: string) => {
+    const handicap = getPlayerHandicap(playerName);
+    if (handicap === undefined) return 0;
+    return Math.max(0, handicap - lowestMatchHandicap);
+  };
+
   const renderNine = (nine: typeof frontNine, isBack: boolean = false) => {
     const scoreColumnLabel = isSingleNine ? 'Tot' : isBack ? 'In' : 'Out';
+    const holeStrokeRanks = getHoleStrokeRanks(nine);
 
     return (
       <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/60">
@@ -173,9 +205,28 @@ export default function Scorecard({ courseName, data, format = 'scramble', team1
             <>
               {team1Players.map((player) => (
                 <tr key={`t1-${player}`}>
-                  <td className={team1LabelClassName}>{player}</td>
+                  <td className={team1LabelClassName}>
+                    <span className="block">{player}</span>
+                    {!isScramble && (
+                      <span className="mt-1 block text-[10px] normal-case tracking-normal text-sky-700/80 dark:text-sky-200/80">
+                        9HCP {getPlayerHandicap(player) ?? '-'} · Gets {getStrokesReceived(player)}
+                      </span>
+                    )}
+                  </td>
                   {nine.holes.map((hole, idx) => (
-                    <td key={idx} className="border px-2 py-2 text-center text-xs">
+                    <td
+                      key={idx}
+                      className={`border px-2 py-2 text-center text-xs ${
+                        !isScramble && getStrokesReceived(player) >= (holeStrokeRanks.get(nine.hcp[idx]) ?? 99)
+                          ? 'bg-sky-50/80 dark:bg-sky-950/40'
+                          : ''
+                      }`}
+                    >
+                      {!isScramble && getStrokesReceived(player) >= (holeStrokeRanks.get(nine.hcp[idx]) ?? 99) && (
+                        <div className="mb-1 flex justify-center">
+                          <span className="h-2 w-2 rounded-full bg-sky-500 dark:bg-sky-300" />
+                        </div>
+                      )}
                       <input
                         type="number"
                         min="0"
@@ -193,9 +244,28 @@ export default function Scorecard({ courseName, data, format = 'scramble', team1
               ))}
               {team2Players.map((player) => (
                 <tr key={`t2-${player}`}>
-                  <td className={team2LabelClassName}>{player}</td>
+                  <td className={team2LabelClassName}>
+                    <span className="block">{player}</span>
+                    {!isScramble && (
+                      <span className="mt-1 block text-[10px] normal-case tracking-normal text-emerald-700/80 dark:text-emerald-200/80">
+                        9HCP {getPlayerHandicap(player) ?? '-'} · Gets {getStrokesReceived(player)}
+                      </span>
+                    )}
+                  </td>
                   {nine.holes.map((hole, idx) => (
-                    <td key={idx} className="border px-2 py-2 text-center text-xs">
+                    <td
+                      key={idx}
+                      className={`border px-2 py-2 text-center text-xs ${
+                        !isScramble && getStrokesReceived(player) >= (holeStrokeRanks.get(nine.hcp[idx]) ?? 99)
+                          ? 'bg-emerald-50/80 dark:bg-emerald-950/40'
+                          : ''
+                      }`}
+                    >
+                      {!isScramble && getStrokesReceived(player) >= (holeStrokeRanks.get(nine.hcp[idx]) ?? 99) && (
+                        <div className="mb-1 flex justify-center">
+                          <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-300" />
+                        </div>
+                      )}
                       <input
                         type="number"
                         min="0"
@@ -217,7 +287,14 @@ export default function Scorecard({ courseName, data, format = 'scramble', team1
           <tr>
             <td className={statCellClassName}>HCP</td>
             {nine.hcp.map((hcp, idx) => (
-              <td key={idx} className={statCellClassName}>{hcp}</td>
+              <td key={idx} className={statCellClassName}>
+                <span className="block">{hcp}</span>
+                {!isScramble && (
+                  <span className="mt-1 block text-[10px] text-slate-400">
+                    {holeStrokeRanks.get(hcp)}
+                  </span>
+                )}
+              </td>
             ))}
             <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>
             {isBack && <td className={emptySummaryClassName}></td>}

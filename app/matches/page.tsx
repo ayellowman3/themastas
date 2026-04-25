@@ -20,6 +20,21 @@ const TEAM2_PLAYERS = {
   '6': 'Sam',
 };
 
+const PLAYER_HANDICAPS = {
+  Kyung: { index: 7, nineHole: 6 },
+  Tommy: { index: 12, nineHole: 10 },
+  George: { index: 12, nineHole: 10 },
+  Justin: { index: 14, nineHole: 12 },
+  Paul: { index: 13, nineHole: 12 },
+  Stephen: { index: 17, nineHole: 15 },
+  'Min Woo': { index: 10, nineHole: 9 },
+  Andy: { index: 11, nineHole: 9 },
+  Terry: { index: 12, nineHole: 10 },
+  Huey: { index: 17, nineHole: 15 },
+  Alex: { index: 16, nineHole: 14 },
+  Sam: { index: 17, nineHole: 15 },
+} as const;
+
 const SCORECARD_DATA = {
   riversaints: {
     holes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
@@ -55,18 +70,6 @@ function getScorecard(course: string, nine: string) {
   }
 }
 
-function formatPlayers(playerString: string, teamPlayers: Record<string, string>): string {
-  if (playerString === 'TBD') return 'TBD';
-  
-  return playerString
-    .split(' & ')
-    .map((p) => {
-      const num = p.trim().replace('#', '');
-      return `${teamPlayers[num]} (#${num})`;
-    })
-    .join(' & ');
-}
-
 function getPairingPlayers(playerString: string, teamPlayers: Record<string, string>): string[] {
   if (playerString === 'TBD') return [];
 
@@ -77,6 +80,39 @@ function getPairingPlayers(playerString: string, teamPlayers: Record<string, str
       return teamPlayers[num];
     })
     .filter(Boolean);
+}
+
+function getPairingPlayerDetails(playerString: string, teamPlayers: Record<string, string>) {
+  if (playerString === 'TBD') return [];
+
+  return playerString
+    .split(' & ')
+    .map((p) => {
+      const number = p.trim().replace('#', '');
+      const name = teamPlayers[number];
+      const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
+
+      if (!name || !handicap) return null;
+
+      return {
+        number,
+        name,
+        handicapIndex: handicap.index,
+        nineHoleHandicap: handicap.nineHole,
+      };
+    })
+    .filter(Boolean);
+}
+
+function getPlayerNineHoleHandicaps(players: string[]) {
+  return Object.fromEntries(
+    players
+      .map((player) => {
+        const handicap = PLAYER_HANDICAPS[player as keyof typeof PLAYER_HANDICAPS];
+        return handicap ? [player, handicap.nineHole] : null;
+      })
+      .filter(Boolean) as Array<[string, number]>
+  );
 }
 
 function getMatchAccent(course: string) {
@@ -294,11 +330,29 @@ export default function Matches() {
                       <div className="grid gap-3 p-4 lg:grid-cols-2">
                         <div className="rounded-2xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-white p-4 dark:border-sky-900 dark:from-sky-950/40 dark:to-slate-900">
                           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700 dark:text-sky-300">Team 1</p>
-                          <p className="mt-2 text-base font-semibold text-slate-900 dark:text-white">{formatPlayers(pairing.team1, TEAM1_PLAYERS)}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {getPairingPlayerDetails(pairing.team1, TEAM1_PLAYERS).map((player) => (
+                              <div key={`team1-${player.number}`} className="rounded-2xl border border-sky-200/80 bg-white/90 px-3 py-2 shadow-sm dark:border-sky-900 dark:bg-slate-900/80">
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white">{player.name} <span className="text-slate-400">#{player.number}</span></p>
+                                <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
+                                  HI {player.handicapIndex} · 9HCP {player.nineHoleHandicap}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                         <div className="rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-white p-4 dark:border-emerald-900 dark:from-emerald-950/40 dark:to-slate-900">
                           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Team 2</p>
-                          <p className="mt-2 text-base font-semibold text-slate-900 dark:text-white">{formatPlayers(pairing.team2, TEAM2_PLAYERS)}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {getPairingPlayerDetails(pairing.team2, TEAM2_PLAYERS).map((player) => (
+                              <div key={`team2-${player.number}`} className="rounded-2xl border border-emerald-200/80 bg-white/90 px-3 py-2 shadow-sm dark:border-emerald-900 dark:bg-slate-900/80">
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white">{player.name} <span className="text-slate-400">#{player.number}</span></p>
+                                <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">
+                                  HI {player.handicapIndex} · 9HCP {player.nineHoleHandicap}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
@@ -310,6 +364,8 @@ export default function Matches() {
                             format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
                             team1Players={getPairingPlayers(pairing.team1, TEAM1_PLAYERS)}
                             team2Players={getPairingPlayers(pairing.team2, TEAM2_PLAYERS)}
+                            team1PlayerHandicaps={getPlayerNineHoleHandicaps(getPairingPlayers(pairing.team1, TEAM1_PLAYERS))}
+                            team2PlayerHandicaps={getPlayerNineHoleHandicaps(getPairingPlayers(pairing.team2, TEAM2_PLAYERS))}
                           />
                         </div>
                       </div>
