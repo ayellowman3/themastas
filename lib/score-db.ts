@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
-import { MATCHES, PLAYER_HANDICAPS, TEAM1_PLAYERS, TEAM2_PLAYERS } from './tournament.js';
+import { MATCHES, PLAYER_HANDICAPS, TEAM1_PLAYERS, TEAM2_PLAYERS } from '@/lib/tournament';
 
 export interface PairingScoreState {
   team1Scores: Record<number, string>;
