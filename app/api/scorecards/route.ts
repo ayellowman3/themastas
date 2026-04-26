@@ -1,4 +1,4 @@
-import { getPairingScoreState, saveHoleScore } from '../../../lib/score-db';
+import { getPairingScoreState, saveHoleScore } from '../../../lib/score-db.js';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
