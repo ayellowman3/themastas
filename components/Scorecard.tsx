@@ -40,7 +40,9 @@ export default function Scorecard({
   const [team2PlayerScores, setTeam2PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam2PlayerScores);
   const [hasLoadedInitialScores, setHasLoadedInitialScores] = useState(false);
   const [loadState, setLoadState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
+  const [loadErrorMessage, setLoadErrorMessage] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
   const saveResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSingleNine = data.holes.length <= 9;
 
@@ -58,7 +60,8 @@ export default function Scorecard({
         });
 
         if (!response.ok) {
-          throw new Error('Failed to load saved scores');
+          const errorPayload = await response.json().catch(() => null);
+          throw new Error(errorPayload?.error || 'Failed to load saved scores');
         }
 
         const payload = await response.json();
@@ -71,9 +74,11 @@ export default function Scorecard({
         setTeam2PlayerScores(payload.team2PlayerScores || {});
         setHasLoadedInitialScores(true);
         setLoadState('loaded');
-      } catch {
+        setLoadErrorMessage(null);
+      } catch (error) {
         if (!isCancelled) {
           setLoadState('error');
+          setLoadErrorMessage(error instanceof Error ? error.message : 'Unknown load error');
         }
       }
     };
@@ -112,14 +117,17 @@ export default function Scorecard({
       });
 
       if (!response.ok) {
-        throw new Error('Save failed');
+        const errorPayload = await response.json().catch(() => null);
+        throw new Error(errorPayload?.error || 'Save failed');
       }
 
       setSaveState('saved');
+      setSaveErrorMessage(null);
       if (saveResetRef.current) clearTimeout(saveResetRef.current);
       saveResetRef.current = setTimeout(() => setSaveState('idle'), 1500);
-    } catch {
+    } catch (error) {
       setSaveState('error');
+      setSaveErrorMessage(error instanceof Error ? error.message : 'Unknown save error');
     }
   };
 
@@ -571,6 +579,12 @@ export default function Scorecard({
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             Hole winners are determined by net score. Enter gross scores; handicap strokes are applied automatically.
           </p>
+        )}
+        {loadErrorMessage && (
+          <p className="mt-2 text-xs text-rose-600 dark:text-rose-300">Load error: {loadErrorMessage}</p>
+        )}
+        {saveErrorMessage && (
+          <p className="mt-1 text-xs text-rose-600 dark:text-rose-300">Save error: {saveErrorMessage}</p>
         )}
       </div>
       {!isSingleNine && (

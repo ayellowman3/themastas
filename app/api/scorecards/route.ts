@@ -4,37 +4,55 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const pairingId = searchParams.get('pairingId');
+  try {
+    const { searchParams } = new URL(request.url);
+    const pairingId = searchParams.get('pairingId');
 
-  if (!pairingId) {
-    return Response.json({ error: 'pairingId is required' }, { status: 400 });
+    if (!pairingId) {
+      return Response.json({ error: 'pairingId is required' }, { status: 400 });
+    }
+
+    return Response.json(getPairingScoreState(pairingId));
+  } catch (error) {
+    return Response.json(
+      {
+        error: error instanceof Error ? `${error.name}: ${error.message}` : 'Unknown GET error',
+      },
+      { status: 500 }
+    );
   }
-
-  return Response.json(getPairingScoreState(pairingId));
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  if (!body?.pairingId || !body?.side || typeof body?.hole !== 'number') {
-    return Response.json({ error: 'pairingId, side, and hole are required' }, { status: 400 });
+    if (!body?.pairingId || !body?.side || typeof body?.hole !== 'number') {
+      return Response.json({ error: 'pairingId, side, and hole are required' }, { status: 400 });
+    }
+
+    const score =
+      body.score === null || body.score === ''
+        ? null
+        : Number.isFinite(Number(body.score))
+          ? Number(body.score)
+          : null;
+
+    saveHoleScore({
+      pairingId: body.pairingId,
+      side: body.side,
+      hole: body.hole,
+      score,
+      playerName: typeof body.playerName === 'string' && body.playerName.length > 0 ? body.playerName : null,
+    });
+
+    return Response.json({ ok: true });
+  } catch (error) {
+    return Response.json(
+      {
+        error: error instanceof Error ? `${error.name}: ${error.message}` : 'Unknown POST error',
+      },
+      { status: 500 }
+    );
   }
-
-  const score =
-    body.score === null || body.score === ''
-      ? null
-      : Number.isFinite(Number(body.score))
-        ? Number(body.score)
-        : null;
-
-  saveHoleScore({
-    pairingId: body.pairingId,
-    side: body.side,
-    hole: body.hole,
-    score,
-    playerName: typeof body.playerName === 'string' && body.playerName.length > 0 ? body.playerName : null,
-  });
-
-  return Response.json({ ok: true });
 }
