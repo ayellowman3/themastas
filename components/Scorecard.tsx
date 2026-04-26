@@ -127,29 +127,33 @@ export default function Scorecard({
   };
 
   const handleTeam1ScoreChange = (hole: number, value: string) => {
-    setTeam1Scores({ ...team1Scores, [hole]: value });
-    queueScoreSave({ side: 'team1', hole, score: value });
+    const normalizedValue = normalizeScoreValue(value, hole);
+    setTeam1Scores({ ...team1Scores, [hole]: normalizedValue });
+    queueScoreSave({ side: 'team1', hole, score: normalizedValue });
   };
 
   const handleTeam2ScoreChange = (hole: number, value: string) => {
-    setTeam2Scores({ ...team2Scores, [hole]: value });
-    queueScoreSave({ side: 'team2', hole, score: value });
+    const normalizedValue = normalizeScoreValue(value, hole);
+    setTeam2Scores({ ...team2Scores, [hole]: normalizedValue });
+    queueScoreSave({ side: 'team2', hole, score: normalizedValue });
   };
 
   const handleTeam1PlayerScoreChange = (playerName: string, hole: number, value: string) => {
+    const normalizedValue = normalizeScoreValue(value, hole, playerName);
     setTeam1PlayerScores({
       ...team1PlayerScores,
-      [playerName]: { ...(team1PlayerScores[playerName] || {}), [hole]: value },
+      [playerName]: { ...(team1PlayerScores[playerName] || {}), [hole]: normalizedValue },
     });
-    queueScoreSave({ side: 'team1', hole, score: value, playerName });
+    queueScoreSave({ side: 'team1', hole, score: normalizedValue, playerName });
   };
 
   const handleTeam2PlayerScoreChange = (playerName: string, hole: number, value: string) => {
+    const normalizedValue = normalizeScoreValue(value, hole, playerName);
     setTeam2PlayerScores({
       ...team2PlayerScores,
-      [playerName]: { ...(team2PlayerScores[playerName] || {}), [hole]: value },
+      [playerName]: { ...(team2PlayerScores[playerName] || {}), [hole]: normalizedValue },
     });
-    queueScoreSave({ side: 'team2', hole, score: value, playerName });
+    queueScoreSave({ side: 'team2', hole, score: normalizedValue, playerName });
   };
 
   const frontNine = {
@@ -190,6 +194,7 @@ export default function Scorecard({
     .map((player) => team1PlayerHandicaps[player] ?? team2PlayerHandicaps[player])
     .filter((handicap): handicap is number => handicap !== undefined);
   const lowestMatchHandicap = allPlayerHandicaps.length > 0 ? Math.min(...allPlayerHandicaps) : 0;
+  const pointsPerSideForTie = team1Players.length === 1 && team2Players.length === 1 ? 0.25 : 0.5;
 
   const getSectionTitle = (isBack: boolean) => {
     if (isSingleNine) return courseName;
@@ -212,6 +217,125 @@ export default function Scorecard({
     if (handicap === undefined) return 0;
     return Math.max(0, handicap - lowestMatchHandicap);
   };
+
+  const getMatchHoleStrokeRanks = () => {
+    const sortedHcp = [...data.hcp].sort((a, b) => a - b);
+    const rankMap = new Map<number, number>();
+    sortedHcp.forEach((hcp, index) => {
+      rankMap.set(hcp, index + 1);
+    });
+    return rankMap;
+  };
+
+  const matchHoleStrokeRanks = getMatchHoleStrokeRanks();
+
+  const playerGetsStrokeOnHole = (playerName: string, hole: number) => {
+    const strokesReceived = getStrokesReceived(playerName);
+    const holeIndex = data.holes.indexOf(hole);
+    if (holeIndex === -1) return false;
+
+    const strokeRank = matchHoleStrokeRanks.get(data.hcp[holeIndex]) ?? 99;
+    return strokesReceived >= strokeRank;
+  };
+
+  const getHoleIndex = (hole: number) => data.holes.indexOf(hole);
+
+  const getMaxGrossScoreForHole = (hole: number, playerName?: string) => {
+    const holeIndex = getHoleIndex(hole);
+    if (holeIndex === -1) return 13;
+
+    const par = data.par[holeIndex];
+    if (isScramble) {
+      return par + 3;
+    }
+
+    const handicapStrokes = playerName && playerGetsStrokeOnHole(playerName, hole) ? 1 : 0;
+    return par + 3 + handicapStrokes;
+  };
+
+  const normalizeScoreValue = (value: string, hole: number, playerName?: string) => {
+    if (value.trim() === '') return '';
+
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return value;
+
+    return String(Math.min(parsed, getMaxGrossScoreForHole(hole, playerName)));
+  };
+
+  const parseScore = (value: string | undefined) => {
+    if (!value) return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  const getScrambleHoleScore = (scores: Record<number, string>, hole: number) => parseScore(scores[hole]);
+
+  const getBestBallHoleScore = (players: string[], scoresByPlayer: Record<string, Record<number, string>>, hole: number) => {
+    if (players.length === 0) return null;
+
+    const scores = players
+      .map((player) => {
+        const grossScore = parseScore(scoresByPlayer[player]?.[hole]);
+        if (grossScore === null) return null;
+
+        const netAdjustment = playerGetsStrokeOnHole(player, hole) ? 1 : 0;
+        return grossScore - netAdjustment;
+      })
+      .filter((score): score is number => score !== null);
+
+    if (scores.length !== players.length) return null;
+    return Math.min(...scores);
+  };
+
+  const getTeamHoleScore = (side: 'team1' | 'team2', hole: number) => {
+    if (isScramble) {
+      return side === 'team1'
+        ? getScrambleHoleScore(team1Scores, hole)
+        : getScrambleHoleScore(team2Scores, hole);
+    }
+
+    return side === 'team1'
+      ? getBestBallHoleScore(team1Players, team1PlayerScores, hole)
+      : getBestBallHoleScore(team2Players, team2PlayerScores, hole);
+  };
+
+  const matchHoles = data.holes;
+  const holeOutcomes = matchHoles.map((hole) => {
+    const team1Score = getTeamHoleScore('team1', hole);
+    const team2Score = getTeamHoleScore('team2', hole);
+
+    if (team1Score === null || team2Score === null) {
+      return 'pending' as const;
+    }
+
+    if (team1Score < team2Score) return 'team1' as const;
+    if (team2Score < team1Score) return 'team2' as const;
+    return 'halve' as const;
+  });
+
+  const completedHoleCount = holeOutcomes.filter((outcome) => outcome !== 'pending').length;
+  const team1HoleWins = holeOutcomes.filter((outcome) => outcome === 'team1').length;
+  const team2HoleWins = holeOutcomes.filter((outcome) => outcome === 'team2').length;
+  const halvedHoles = holeOutcomes.filter((outcome) => outcome === 'halve').length;
+  const holeMargin = Math.abs(team1HoleWins - team2HoleWins);
+  const allMatchHolesComplete = completedHoleCount === matchHoles.length;
+  const leadingTeamLabel = team1HoleWins > team2HoleWins ? 'Team 1' : team2HoleWins > team1HoleWins ? 'Team 2' : null;
+
+  const matchResultLabel = allMatchHolesComplete
+    ? team1HoleWins === team2HoleWins
+      ? 'Match halved'
+      : `${leadingTeamLabel} wins ${holeMargin}UP`
+    : completedHoleCount === 0
+      ? 'Awaiting scores'
+      : team1HoleWins === team2HoleWins
+        ? `All square thru ${completedHoleCount}`
+        : `${leadingTeamLabel} ${holeMargin}UP thru ${completedHoleCount}`;
+
+  const tournamentPointsLabel = allMatchHolesComplete
+    ? team1HoleWins === team2HoleWins
+      ? `Each team earns ${pointsPerSideForTie} tournament points`
+      : `${leadingTeamLabel} earns 1 tournament point`
+    : 'Tournament points pending until all 9 holes are complete';
 
   const renderNine = (nine: typeof frontNine, isBack: boolean = false) => {
     const scoreColumnLabel = isSingleNine ? 'Tot' : isBack ? 'In' : 'Out';
@@ -285,11 +409,11 @@ export default function Scorecard({
                     <input
                       type="number"
                       min="0"
-                      max="13"
+                      max={getMaxGrossScoreForHole(hole)}
                       value={team1Scores[hole] || ''}
                       onChange={(e) => handleTeam1ScoreChange(hole, e.target.value)}
                       className={inputClassName}
-                      placeholder="-"
+                      placeholder={String(getMaxGrossScoreForHole(hole))}
                     />
                   </td>
                 ))}
@@ -303,11 +427,11 @@ export default function Scorecard({
                     <input
                       type="number"
                       min="0"
-                      max="13"
+                      max={getMaxGrossScoreForHole(hole)}
                       value={team2Scores[hole] || ''}
                       onChange={(e) => handleTeam2ScoreChange(hole, e.target.value)}
                       className={inputClassName}
-                      placeholder="-"
+                      placeholder={String(getMaxGrossScoreForHole(hole))}
                     />
                   </td>
                 ))}
@@ -344,11 +468,11 @@ export default function Scorecard({
                       <input
                         type="number"
                         min="0"
-                        max="13"
+                        max={getMaxGrossScoreForHole(hole, player)}
                         value={team1PlayerScores[player]?.[hole] || ''}
                         onChange={(e) => handleTeam1PlayerScoreChange(player, hole, e.target.value)}
                         className={inputClassName}
-                        placeholder="-"
+                        placeholder={String(getMaxGrossScoreForHole(hole, player))}
                       />
                     </td>
                   ))}
@@ -383,11 +507,11 @@ export default function Scorecard({
                       <input
                         type="number"
                         min="0"
-                        max="13"
+                        max={getMaxGrossScoreForHole(hole, player)}
                         value={team2PlayerScores[player]?.[hole] || ''}
                         onChange={(e) => handleTeam2PlayerScoreChange(player, hole, e.target.value)}
                         className={inputClassName}
-                        placeholder="-"
+                        placeholder={String(getMaxGrossScoreForHole(hole, player))}
                       />
                     </td>
                   ))}
@@ -422,6 +546,26 @@ export default function Scorecard({
 
   return (
     <div className="space-y-4">
+      <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-r from-slate-50 to-white px-4 py-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Match Play Result</p>
+            <p className="mt-1 text-base font-semibold text-slate-900 dark:text-white">{matchResultLabel}</p>
+          </div>
+          <div className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white dark:bg-slate-100 dark:text-slate-900">
+            {team1HoleWins}-{team2HoleWins}-{halvedHoles}
+          </div>
+        </div>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{tournamentPointsLabel}</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          Max score per hole: {isScramble ? 'triple bogey' : 'net triple bogey'}.
+        </p>
+        {!isScramble && (
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Hole winners are determined by net score. Enter gross scores; handicap strokes are applied automatically.
+          </p>
+        )}
+      </div>
       {!isSingleNine && (
         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{courseName}</h3>
       )}
