@@ -1,5 +1,6 @@
 export interface ScorecardData {
   holes: number[];
+  tees?: string[];
   yds: number[];
   par: number[];
   hcp: number[];
@@ -67,9 +68,10 @@ export const PLAYER_HANDICAPS: Record<string, PlayerHandicap> = {
   Sam: { index: 17, nineHole: 15 },
 };
 
-export const SCORECARD_DATA = {
+export const SCORECARD_DATA: Record<'riversaints' | 'lakes', ScorecardData> = {
   riversaints: {
     holes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    tees: ['Blue', 'Blue', 'Gold', 'Blue', 'Gold', 'Blue', 'Gold', 'Gold', 'Blue', 'Gold', 'Blue', 'Gold', 'Blue', 'Blue', 'Gold', 'Blue', 'Blue', 'Gold'],
     yds: [336, 142, 383, 333, 475, 345, 433, 160, 360, 418, 524, 307, 131, 387, 385, 174, 341, 502],
     par: [4, 3, 4, 4, 5, 4, 5, 3, 4, 4, 5, 4, 3, 4, 4, 3, 4, 5],
     hcp: [15, 17, 5, 7, 11, 13, 1, 9, 3, 2, 10, 12, 18, 8, 4, 16, 14, 6],
@@ -80,7 +82,7 @@ export const SCORECARD_DATA = {
     par: [4, 4, 3, 5, 4, 4, 4, 3, 4, 4, 3, 5, 4, 4, 5, 4, 3, 4],
     hcp: [15, 7, 17, 5, 1, 3, 9, 11, 13, 8, 16, 12, 2, 4, 6, 14, 10, 18],
   },
-} as const;
+};
 
 export const MATCHES: MatchSeed[] = [
   {
@@ -182,6 +184,7 @@ export function getScorecard(course: 'River' | 'Lakes', nine: 'Front 9' | 'Back 
   if (nine === 'Front 9') {
     return {
       holes: courseData.holes.slice(0, 9),
+      tees: courseData.tees?.slice(0, 9),
       yds: courseData.yds.slice(0, 9),
       par: courseData.par.slice(0, 9),
       hcp: courseData.hcp.slice(0, 9),
@@ -190,6 +193,7 @@ export function getScorecard(course: 'River' | 'Lakes', nine: 'Front 9' | 'Back 
 
   return {
     holes: courseData.holes.slice(9, 18),
+    tees: courseData.tees?.slice(9, 18),
     yds: courseData.yds.slice(9, 18),
     par: courseData.par.slice(9, 18),
     hcp: courseData.hcp.slice(9, 18),

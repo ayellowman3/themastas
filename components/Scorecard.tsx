@@ -163,6 +163,7 @@ export default function Scorecard({
 
   const frontNine = {
     holes: data.holes.slice(0, 9),
+    tees: data.tees?.slice(0, 9),
     yds: data.yds.slice(0, 9),
     par: data.par.slice(0, 9),
     hcp: data.hcp.slice(0, 9),
@@ -170,6 +171,7 @@ export default function Scorecard({
 
   const backNine = {
     holes: data.holes.slice(9, 18),
+    tees: data.tees?.slice(9, 18),
     yds: data.yds.slice(9, 18),
     par: data.par.slice(9, 18),
     hcp: data.hcp.slice(9, 18),
@@ -398,6 +400,24 @@ export default function Scorecard({
           </tr>
         </thead>
         <tbody className="bg-white/90 dark:bg-slate-900/70">
+          {nine.tees && (
+            <tr>
+              <td className={statCellClassName}>Tee</td>
+              {nine.tees.map((tee, idx) => (
+                <td key={idx} className={statCellClassName}>
+                  <span className={`inline-flex rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] sm:text-[10px] ${
+                    tee === 'Blue'
+                      ? 'bg-sky-100 text-sky-800 dark:bg-sky-950/70 dark:text-sky-200'
+                      : 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200'
+                  }`}>
+                    {tee}
+                  </span>
+                </td>
+              ))}
+              <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>
+              {isBack && <td className={emptySummaryClassName}></td>}
+            </tr>
+          )}
           <tr>
             <td className={statCellClassName}>Yards</td>
             {nine.yds.map((yds, idx) => (
