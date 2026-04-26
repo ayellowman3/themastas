@@ -38,14 +38,9 @@ export default function Scorecard({
   const [team2Scores, setTeam2Scores] = useState<Record<number, string>>(initialTeam2Scores);
   const [team1PlayerScores, setTeam1PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam1PlayerScores);
   const [team2PlayerScores, setTeam2PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam2PlayerScores);
-  const [hasLoadedInitialScores, setHasLoadedInitialScores] = useState(
-    Object.keys(initialTeam1Scores).length > 0 ||
-      Object.keys(initialTeam2Scores).length > 0 ||
-      Object.keys(initialTeam1PlayerScores).length > 0 ||
-      Object.keys(initialTeam2PlayerScores).length > 0
-  );
+  const [hasLoadedInitialScores, setHasLoadedInitialScores] = useState(false);
+  const [loadState, setLoadState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSingleNine = data.holes.length <= 9;
 
@@ -55,6 +50,7 @@ export default function Scorecard({
     let isCancelled = false;
 
     const loadScores = async () => {
+      setLoadState('loading');
       try {
         const response = await fetch(`/api/scorecards?pairingId=${encodeURIComponent(pairingId)}`, {
           method: 'GET',
@@ -74,9 +70,10 @@ export default function Scorecard({
         setTeam1PlayerScores(payload.team1PlayerScores || {});
         setTeam2PlayerScores(payload.team2PlayerScores || {});
         setHasLoadedInitialScores(true);
+        setLoadState('loaded');
       } catch {
         if (!isCancelled) {
-          setSaveState('error');
+          setLoadState('error');
         }
       }
     };
@@ -88,7 +85,7 @@ export default function Scorecard({
     };
   }, [hasLoadedInitialScores, pairingId]);
 
-  const queueScoreSave = (payload: {
+  const queueScoreSave = async (payload: {
     side: 'team1' | 'team2';
     hole: number;
     score: string;
@@ -96,34 +93,34 @@ export default function Scorecard({
   }) => {
     if (!pairingId) return;
 
-    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-
     setSaveState('saving');
-    saveTimeoutRef.current = setTimeout(async () => {
-      try {
-        const parsedScore = payload.score.trim() === '' ? null : Number(payload.score);
+    try {
+      const parsedScore = payload.score.trim() === '' ? null : Number(payload.score);
 
-        await fetch('/api/scorecards', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            pairingId,
-            side: payload.side,
-            hole: payload.hole,
-            playerName: payload.playerName ?? null,
-            score: Number.isFinite(parsedScore) ? parsedScore : null,
-          }),
-        });
+      const response = await fetch('/api/scorecards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pairingId,
+          side: payload.side,
+          hole: payload.hole,
+          playerName: payload.playerName ?? null,
+          score: Number.isFinite(parsedScore) ? parsedScore : null,
+        }),
+      });
 
-        setSaveState('saved');
-        if (saveResetRef.current) clearTimeout(saveResetRef.current);
-        saveResetRef.current = setTimeout(() => setSaveState('idle'), 1500);
-      } catch {
-        setSaveState('error');
+      if (!response.ok) {
+        throw new Error('Save failed');
       }
-    }, 250);
+
+      setSaveState('saved');
+      if (saveResetRef.current) clearTimeout(saveResetRef.current);
+      saveResetRef.current = setTimeout(() => setSaveState('idle'), 1500);
+    } catch {
+      setSaveState('error');
+    }
   };
 
   const handleTeam1ScoreChange = (hole: number, value: string) => {
@@ -352,14 +349,24 @@ export default function Scorecard({
             {pairingId && (
               <span
                 className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
-                  saveState === 'error'
+                  loadState === 'error' || saveState === 'error'
                     ? 'text-rose-500 dark:text-rose-300'
                     : saveState === 'saved'
                       ? 'text-emerald-600 dark:text-emerald-300'
                       : 'text-slate-400'
                 }`}
               >
-                {saveState === 'saving' ? 'Saving' : saveState === 'saved' ? 'Saved' : saveState === 'error' ? 'Save failed' : 'Auto save'}
+                {loadState === 'loading'
+                  ? 'Loading'
+                  : loadState === 'error'
+                    ? 'Load failed'
+                    : saveState === 'saving'
+                      ? 'Saving'
+                      : saveState === 'saved'
+                        ? 'Saved'
+                        : saveState === 'error'
+                          ? 'Save failed'
+                          : 'Auto save'}
               </span>
             )}
             <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:hidden">
