@@ -22,6 +22,14 @@ interface HoleScoreRow {
 let db: DatabaseSync | null = null;
 
 function getDatabasePath() {
+  if (process.env.SCORE_DB_PATH) {
+    return process.env.SCORE_DB_PATH;
+  }
+
+  if (process.env.VERCEL === '1' || process.env.NODE_ENV === 'production') {
+    return '/tmp/themastas.sqlite';
+  }
+
   return join(process.cwd(), 'data', 'themastas.sqlite');
 }
 
