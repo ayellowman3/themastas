@@ -103,6 +103,26 @@ export default function Matches() {
 
                     return (
                       <div key={pairing.id} className="pairing-print-card overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
+                        <div className="hidden print:block border-b border-black/20 px-2 py-1">
+                          <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-black">
+                            <span>{match.course} · {match.nine}</span>
+                            <span>{match.format}</span>
+                          </div>
+                          <div className="mt-1 grid grid-cols-2 gap-2 text-[10px] text-black">
+                            <p>
+                              <span className="font-semibold">Team 1:</span>{' '}
+                              {getPairingPlayerDetails(pairing.team1, TEAM1_PLAYERS)
+                                .map((player) => `${player.name} (${player.nineHoleHandicap})`)
+                                .join(', ')}
+                            </p>
+                            <p>
+                              <span className="font-semibold">Team 2:</span>{' '}
+                              {getPairingPlayerDetails(pairing.team2, TEAM2_PLAYERS)
+                                .map((player) => `${player.name} (${player.nineHoleHandicap})`)
+                                .join(', ')}
+                            </p>
+                          </div>
+                        </div>
                         <div className="flex flex-col gap-3 border-b border-slate-200/80 bg-slate-50/90 px-4 py-4 dark:border-slate-700 dark:bg-slate-800/70 lg:flex-row lg:items-center lg:justify-between">
                           <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Pairing {idx + 1}</p>
@@ -161,6 +181,7 @@ export default function Matches() {
                               courseName={`${match.course} - ${match.nine}`}
                               data={getScorecard(match.course, match.nine)}
                               format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
+                              printCompact
                               team1Players={team1Players}
                               team2Players={team2Players}
                               team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players)}

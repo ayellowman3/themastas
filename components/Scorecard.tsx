@@ -9,6 +9,7 @@ interface ScorecardProps {
   courseName: string;
   data: ScorecardData;
   format?: 'best-ball' | 'scramble';
+  printCompact?: boolean;
   team1Players?: string[];
   team2Players?: string[];
   team1PlayerHandicaps?: Record<string, number>;
@@ -24,6 +25,7 @@ export default function Scorecard({
   courseName,
   data,
   format = 'scramble',
+  printCompact = false,
   team1Players = [],
   team2Players = [],
   team1PlayerHandicaps = {},
@@ -395,8 +397,8 @@ export default function Scorecard({
             {nine.holes.map((hole) => (
               <th key={hole} className="border px-1.5 py-2 text-center text-[10px] sm:px-2 sm:text-[11px]">{hole}</th>
             ))}
-            <th className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{scoreColumnLabel}</th>
-            {isBack && <th className={summaryTotalClassName}>Tot</th>}
+            {!printCompact && <th className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{scoreColumnLabel}</th>}
+            {!printCompact && isBack && <th className={summaryTotalClassName}>Tot</th>}
           </tr>
         </thead>
         <tbody className="bg-white/90 dark:bg-slate-900/70">
@@ -414,8 +416,8 @@ export default function Scorecard({
                   </span>
                 </td>
               ))}
-              <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>
-              {isBack && <td className={emptySummaryClassName}></td>}
+              {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>}
+              {!printCompact && isBack && <td className={emptySummaryClassName}></td>}
             </tr>
           )}
           <tr>
@@ -423,16 +425,16 @@ export default function Scorecard({
             {nine.yds.map((yds, idx) => (
               <td key={idx} className={statCellClassName}>{yds}</td>
             ))}
-            <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontYards : isBack ? backYards : frontYards}</td>
-            {isBack && <td className={summaryTotalClassName}>{totalYards}</td>}
+            {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontYards : isBack ? backYards : frontYards}</td>}
+            {!printCompact && isBack && <td className={summaryTotalClassName}>{totalYards}</td>}
           </tr>
           <tr>
             <td className={statCellClassName}>Par</td>
             {nine.par.map((par, idx) => (
               <td key={idx} className={statCellClassName}>{par}</td>
             ))}
-            <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontTotal : isBack ? backTotal : frontTotal}</td>
-            {isBack && <td className={summaryTotalClassName}>{totalPar}</td>}
+            {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontTotal : isBack ? backTotal : frontTotal}</td>}
+            {!printCompact && isBack && <td className={summaryTotalClassName}>{totalPar}</td>}
           </tr>
           
           {isScramble ? (
@@ -452,8 +454,8 @@ export default function Scorecard({
                     />
                   </td>
                 ))}
-                <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) || '-'}</td>
-                {isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0)) || '-'}</td>}
+                {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) || '-'}</td>}
+                {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0)) || '-'}</td>}
               </tr>
               <tr>
                 <td className={team2LabelClassName}>Team 2</td>
@@ -470,8 +472,8 @@ export default function Scorecard({
                     />
                   </td>
                 ))}
-                <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) || '-'}</td>
-                {isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0)) || '-'}</td>}
+                {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) || '-'}</td>}
+                {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0)) || '-'}</td>}
               </tr>
             </>
           ) : (
@@ -482,7 +484,7 @@ export default function Scorecard({
                     <span className="block">{player}</span>
                     {!isScramble && (
                       <span className="mt-1 block text-[10px] normal-case tracking-normal text-sky-700/80 dark:text-sky-200/80">
-                        9HCP {getPlayerHandicap(player) ?? '-'} · Gets {getStrokesReceived(player)}
+                        HCP {getPlayerHandicap(player) ?? '-'}{printCompact ? '' : ` · Gets ${getStrokesReceived(player)}`}
                       </span>
                     )}
                   </td>
@@ -511,8 +513,8 @@ export default function Scorecard({
                       />
                     </td>
                   ))}
-                  <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>
-                  {isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
+                  {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
+                  {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
                 </tr>
               ))}
               {team2Players.map((player) => (
@@ -521,7 +523,7 @@ export default function Scorecard({
                     <span className="block">{player}</span>
                     {!isScramble && (
                       <span className="mt-1 block text-[10px] normal-case tracking-normal text-emerald-700/80 dark:text-emerald-200/80">
-                        9HCP {getPlayerHandicap(player) ?? '-'} · Gets {getStrokesReceived(player)}
+                        HCP {getPlayerHandicap(player) ?? '-'}{printCompact ? '' : ` · Gets ${getStrokesReceived(player)}`}
                       </span>
                     )}
                   </td>
@@ -550,28 +552,30 @@ export default function Scorecard({
                       />
                     </td>
                   ))}
-                  <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>
-                  {isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
+                  {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
+                  {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
                 </tr>
               ))}
             </>
           )}
 
-          <tr>
-            <td className={statCellClassName}>HCP</td>
-            {nine.hcp.map((hcp, idx) => (
-              <td key={idx} className={statCellClassName}>
-                <span className="block">{hcp}</span>
-                {!isScramble && (
-                  <span className="mt-1 block text-[10px] text-slate-400">
-                    {holeStrokeRanks.get(hcp)}
-                  </span>
-                )}
-              </td>
-            ))}
-            <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>
-            {isBack && <td className={emptySummaryClassName}></td>}
-          </tr>
+          {!printCompact && (
+            <tr>
+              <td className={statCellClassName}>HCP</td>
+              {nine.hcp.map((hcp, idx) => (
+                <td key={idx} className={statCellClassName}>
+                  <span className="block">{hcp}</span>
+                  {!isScramble && (
+                    <span className="mt-1 block text-[10px] text-slate-400">
+                      {holeStrokeRanks.get(hcp)}
+                    </span>
+                  )}
+                </td>
+              ))}
+              <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>
+              {isBack && <td className={emptySummaryClassName}></td>}
+            </tr>
+          )}
         </tbody>
       </table>
       </div>
@@ -581,6 +585,7 @@ export default function Scorecard({
 
   return (
     <div className="space-y-4">
+      {!printCompact && (
       <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-r from-slate-50 to-white px-4 py-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -607,6 +612,7 @@ export default function Scorecard({
           <p className="mt-1 text-xs text-rose-600 dark:text-rose-300">Save error: {saveErrorMessage}</p>
         )}
       </div>
+      )}
       {!isSingleNine && (
         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{courseName}</h3>
       )}
