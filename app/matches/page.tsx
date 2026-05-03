@@ -172,7 +172,22 @@ export default function Matches() {
                           </div>
                         </div>
 
-                        <div className="px-3 pb-3 sm:px-4 sm:pb-4 print:px-2 print:pb-2">
+                        <div className="px-3 pb-3 sm:px-4 sm:pb-4 print:hidden">
+                          <div className="rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
+                            <Scorecard
+                              pairingId={pairing.id}
+                              courseName={`${match.course} - ${match.nine}`}
+                              data={getScorecard(match.course, match.nine)}
+                              format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
+                              team1Players={team1Players}
+                              team2Players={team2Players}
+                              team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players)}
+                              team2PlayerHandicaps={getPlayerNineHoleHandicaps(team2Players)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="hidden print:block print:px-2 print:pb-2">
                           <div className="pairing-print-scorecard rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
                             <Scorecard
                               pairingId={pairing.id}
