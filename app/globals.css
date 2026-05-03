@@ -111,10 +111,9 @@ body {
   .print-matchbook .print-match-sheet {
     break-after: page;
     page-break-after: always;
-    border: 1px solid rgba(0, 0, 0, 0.28) !important;
+    border: none !important;
     background: #fff !important;
     padding: 0 !important;
-    min-height: calc(11in - 0.9in);
   }
 
   .print-matchbook .print-match-sheet:last-child {
@@ -124,7 +123,7 @@ body {
 
   .print-matchbook .print-match-sheet > div {
     background: #fff !important;
-    padding: 0.12in !important;
+    padding: 0 !important;
   }
 
   .print-matchbook .pairing-print-card {
@@ -139,7 +138,7 @@ body {
     display: grid !important;
     grid-template-columns: 1fr !important;
     grid-template-rows: repeat(3, minmax(0, 1fr));
-    gap: 0.08in !important;
+    gap: 0.04in !important;
   }
 
   .print-matchbook .pairing-print-card > div:first-child {
@@ -169,7 +168,7 @@ body {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -0.04in;
+    bottom: -0.02in;
     border-top: 1.5px dashed #000;
   }
 
@@ -224,7 +223,7 @@ body {
   .print-matchbook .space-y-4 > :not([hidden]) ~ :not([hidden]),
   .print-matchbook .space-y-3 > :not([hidden]) ~ :not([hidden]),
   .print-matchbook .space-y-2 > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 0.05in !important;
+    margin-top: 0.02in !important;
   }
 
   .print-matchbook .overflow-x-auto,
@@ -256,6 +255,10 @@ body {
 
   .print-matchbook .print\:block {
     display: block !important;
+  }
+
+  .print-matchbook h2 {
+    display: none !important;
   }
 
   .print-matchbook .print-score-slot {

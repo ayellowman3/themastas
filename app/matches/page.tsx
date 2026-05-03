@@ -20,7 +20,7 @@ export default function Matches() {
     <PageContainer>
       <div className="print-matchbook">
       <SectionCard title="Matches">
-        <div className="mb-6 overflow-hidden rounded-[24px] border border-slate-200/80 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 px-4 py-5 text-white shadow-xl sm:mb-8 sm:rounded-[28px] sm:px-6 sm:py-7 dark:border-slate-700">
+        <div className="mb-6 overflow-hidden rounded-[24px] border border-slate-200/80 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 px-4 py-5 text-white shadow-xl print:hidden sm:mb-8 sm:rounded-[28px] sm:px-6 sm:py-7 dark:border-slate-700">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-200/80">Tournament Scorecards</p>
@@ -60,7 +60,7 @@ export default function Matches() {
               className={`print-match-sheet overflow-hidden rounded-[24px] border bg-gradient-to-br p-1 shadow-lg sm:rounded-[28px] ${getMatchAccent(match.course).panel} ${getMatchAccent(match.course).border}`}
             >
               <div className="rounded-[20px] bg-white/90 p-4 backdrop-blur-sm sm:rounded-[24px] sm:p-5 dark:bg-slate-900/85">
-                <div className="mb-4 flex flex-col gap-4 lg:mb-5 lg:flex-row lg:items-end lg:justify-between">
+                <div className="mb-4 flex flex-col gap-4 print:hidden lg:mb-5 lg:flex-row lg:items-end lg:justify-between">
                   <div>
                     <div className="mb-3 flex flex-wrap items-center gap-2">
                       <span className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getMatchAccent(match.course).badge}`}>
