@@ -1,6 +1,7 @@
 import PageContainer from '../../components/PageContainer';
 import SectionCard from '../../components/SectionCard';
 import Scorecard from '../../components/Scorecard';
+import PrintButton from '../../components/PrintButton';
 
 export default function Scorecards() {
   const lakesData = {
@@ -20,10 +21,38 @@ export default function Scorecards() {
 
   return (
     <PageContainer>
-      <SectionCard title="Queenstown Harbour Golf Course">
-        <Scorecard courseName="Lakes Course" data={lakesData} />
-        <Scorecard courseName="River Course" data={riverData} />
-      </SectionCard>
+      <div className="print-scorebook">
+        <div className="mb-6 flex flex-col gap-4 rounded-[28px] border border-slate-200 bg-gradient-to-br from-stone-50 via-white to-emerald-50 p-6 shadow-sm print:hidden">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700">Printable Scorebook</p>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">The Mastas Cup Score Card Book</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+                Print this page for a clean paper scorebook. The course cards are formatted to stay readable on letter paper and include River Blue/Gold tee assignments.
+              </p>
+            </div>
+            <PrintButton />
+          </div>
+        </div>
+
+        <SectionCard title="Queenstown Harbour Golf Course">
+          <div className="mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-5 print:mb-4 print:rounded-none print:border-black/30 print:bg-white print:p-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 print:text-black">Scorebook Notes</p>
+            <div className="mt-3 grid gap-3 text-sm text-slate-700 print:gap-2 print:text-[11px] print:text-black md:grid-cols-3">
+              <p>Scramble matches use triple bogey maximum score per hole.</p>
+              <p>Best ball and singles use net triple bogey maximum score per hole.</p>
+              <p>River Course uses Blue/Gold composite tees; the tee row shows the correct tee on every hole.</p>
+            </div>
+          </div>
+
+          <div className="print-course-card">
+            <Scorecard courseName="Lakes Course" data={lakesData} />
+          </div>
+          <div className="print-course-card">
+            <Scorecard courseName="River Course (Blue/Gold)" data={riverData} />
+          </div>
+        </SectionCard>
+      </div>
     </PageContainer>
   );
 }
