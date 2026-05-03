@@ -99,4 +99,142 @@ body {
   .print-scorebook .dark\:bg-slate-900\/85 {
     background: #fff !important;
   }
+
+  .print-matchbook {
+    color: #000 !important;
+  }
+
+  .print-matchbook * {
+    box-shadow: none !important;
+  }
+
+  .print-matchbook .print-match-sheet {
+    break-after: page;
+    page-break-after: always;
+    border: 1px solid rgba(0, 0, 0, 0.28) !important;
+    background: #fff !important;
+    padding: 0 !important;
+    min-height: calc(11in - 0.9in);
+  }
+
+  .print-matchbook .print-match-sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .print-matchbook .print-match-sheet > div {
+    background: #fff !important;
+    padding: 0.12in !important;
+  }
+
+  .print-matchbook .pairing-print-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    height: 100%;
+  }
+
+  .print-matchbook .pairings-print-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 0.08in !important;
+  }
+
+  .print-matchbook .pairing-print-card > div:first-child {
+    padding: 0.08in 0.1in !important;
+  }
+
+  .print-matchbook .pairing-print-scorecard {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    padding: 0.06in !important;
+  }
+
+  .print-matchbook .pairing-print-scorecard > div {
+    gap: 0.08in !important;
+  }
+
+  .print-matchbook .rounded-\[24px\],
+  .print-matchbook .rounded-\[20px\],
+  .print-matchbook .rounded-\[28px\],
+  .print-matchbook .rounded-3xl,
+  .print-matchbook .rounded-2xl {
+    border-radius: 0 !important;
+  }
+
+  .print-matchbook .bg-gradient-to-br,
+  .print-matchbook .bg-gradient-to-r,
+  .print-matchbook .from-slate-950,
+  .print-matchbook .via-slate-900,
+  .print-matchbook .to-emerald-950 {
+    background: #fff !important;
+  }
+
+  .print-matchbook .text-white,
+  .print-matchbook .text-slate-300,
+  .print-matchbook .text-slate-400,
+  .print-matchbook .text-slate-500,
+  .print-matchbook .text-slate-600,
+  .print-matchbook .text-slate-700,
+  .print-matchbook .text-slate-800,
+  .print-matchbook .text-slate-900 {
+    color: #000 !important;
+  }
+
+  .print-matchbook .grid-cols-3,
+  .print-matchbook .grid-cols-2,
+  .print-matchbook .md\:grid-cols-3,
+  .print-matchbook .lg\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .print-matchbook .pairing-print-card .lg\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .print-matchbook .space-y-8,
+  .print-matchbook .space-y-4,
+  .print-matchbook .space-y-3,
+  .print-matchbook .space-y-2 {
+    --tw-space-y-reverse: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .print-matchbook .space-y-8 > :not([hidden]) ~ :not([hidden]),
+  .print-matchbook .space-y-4 > :not([hidden]) ~ :not([hidden]),
+  .print-matchbook .space-y-3 > :not([hidden]) ~ :not([hidden]),
+  .print-matchbook .space-y-2 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.08in !important;
+  }
+
+  .print-matchbook .overflow-x-auto,
+  .print-matchbook .overflow-hidden {
+    overflow: visible !important;
+  }
+
+  .print-matchbook table {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .print-matchbook input {
+    height: 0.2in !important;
+    width: 0.2in !important;
+    min-height: 0.2in !important;
+    border: 1px solid #000 !important;
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    font-size: 10px !important;
+  }
+
+  .print-matchbook .sticky {
+    position: static !important;
+  }
+
+  .print-matchbook .print\:hidden,
+  .print-matchbook button,
+  .print-matchbook nav {
+    display: none !important;
+  }
 }

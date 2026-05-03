@@ -1,4 +1,5 @@
 import PageContainer from '../../components/PageContainer';
+import PrintButton from '../../components/PrintButton';
 import SectionCard from '../../components/SectionCard';
 import Scorecard from '../../components/Scorecard';
 import {
@@ -17,6 +18,7 @@ import {
 export default function Matches() {
   return (
     <PageContainer>
+      <div className="print-matchbook">
       <SectionCard title="Matches">
         <div className="mb-6 overflow-hidden rounded-[24px] border border-slate-200/80 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 px-4 py-5 text-white shadow-xl sm:mb-8 sm:rounded-[28px] sm:px-6 sm:py-7 dark:border-slate-700">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -27,6 +29,8 @@ export default function Matches() {
                 Scores are now stored in a local SQLite database, so players can refresh and continue where they left off.
               </p>
             </div>
+            <div className="flex flex-col items-start gap-3">
+              <PrintButton />
             <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Rounds</p>
@@ -45,6 +49,7 @@ export default function Matches() {
                 <p className="mt-1 text-2xl font-semibold">2</p>
               </div>
             </div>
+            </div>
           </div>
         </div>
 
@@ -52,7 +57,7 @@ export default function Matches() {
           {MATCHES.map((match) => (
             <div
               key={match.round}
-              className={`overflow-hidden rounded-[24px] border bg-gradient-to-br p-1 shadow-lg sm:rounded-[28px] ${getMatchAccent(match.course).panel} ${getMatchAccent(match.course).border}`}
+              className={`print-match-sheet overflow-hidden rounded-[24px] border bg-gradient-to-br p-1 shadow-lg sm:rounded-[28px] ${getMatchAccent(match.course).panel} ${getMatchAccent(match.course).border}`}
             >
               <div className="rounded-[20px] bg-white/90 p-4 backdrop-blur-sm sm:rounded-[24px] sm:p-5 dark:bg-slate-900/85">
                 <div className="mb-4 flex flex-col gap-4 lg:mb-5 lg:flex-row lg:items-end lg:justify-between">
@@ -91,13 +96,13 @@ export default function Matches() {
                   </div>
                 </div>
 
-                <div className="space-y-3 sm:space-y-4">
+                <div className="pairings-print-grid space-y-3 sm:space-y-4 print:space-y-2">
                   {match.pairings.map((pairing, idx) => {
                     const team1Players = getPairingPlayers(pairing.team1, TEAM1_PLAYERS);
                     const team2Players = getPairingPlayers(pairing.team2, TEAM2_PLAYERS);
 
                     return (
-                      <div key={pairing.id} className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
+                      <div key={pairing.id} className="pairing-print-card overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
                         <div className="flex flex-col gap-3 border-b border-slate-200/80 bg-slate-50/90 px-4 py-4 dark:border-slate-700 dark:bg-slate-800/70 lg:flex-row lg:items-center lg:justify-between">
                           <div>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Pairing {idx + 1}</p>
@@ -115,7 +120,7 @@ export default function Matches() {
                           </div>
                         </div>
 
-                        <div className="grid gap-3 p-3 sm:p-4 lg:grid-cols-2">
+                        <div className="grid gap-3 p-3 sm:p-4 lg:grid-cols-2 print:gap-2 print:p-2">
                           <div className="rounded-2xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-white p-3 sm:p-4 dark:border-sky-900 dark:from-sky-950/40 dark:to-slate-900">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700 dark:text-sky-300">Team 1</p>
                             <div className="mt-3 flex flex-wrap gap-2">
@@ -149,8 +154,8 @@ export default function Matches() {
                           </div>
                         </div>
 
-                        <div className="px-3 pb-3 sm:px-4 sm:pb-4">
-                          <div className="rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
+                        <div className="px-3 pb-3 sm:px-4 sm:pb-4 print:px-2 print:pb-2">
+                          <div className="pairing-print-scorecard rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
                             <Scorecard
                               pairingId={pairing.id}
                               courseName={`${match.course} - ${match.nine}`}
@@ -172,6 +177,7 @@ export default function Matches() {
           ))}
         </div>
       </SectionCard>
+      </div>
     </PageContainer>
   );
 }
