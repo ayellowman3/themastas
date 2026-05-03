@@ -350,7 +350,7 @@ export default function Scorecard({
     if (printCompact) {
       return (
         <div className="print-score-slot">
-          {value ? <span>{value}</span> : <span className="print-score-line" />}
+          {value ? <span>{value}</span> : null}
         </div>
       );
     }
@@ -501,8 +501,12 @@ export default function Scorecard({
               {team1Players.map((player) => (
                 <tr key={`t1-${player}`}>
                   <td className={team1LabelClassName}>
-                    <span className="block">{player}</span>
-                    {!isScramble && (
+                    {printCompact ? (
+                      <span className="block">{`${player}-${getPlayerHandicap(player) ?? '-'}`}</span>
+                    ) : (
+                      <span className="block">{player}</span>
+                    )}
+                    {!isScramble && !printCompact && (
                       <span className="mt-1 block text-[10px] normal-case tracking-normal text-sky-700/80 dark:text-sky-200/80">
                         HCP {getPlayerHandicap(player) ?? '-'}{printCompact ? '' : ` · Gets ${getStrokesReceived(player)}`}
                       </span>
@@ -544,8 +548,12 @@ export default function Scorecard({
               {team2Players.map((player) => (
                 <tr key={`t2-${player}`}>
                   <td className={team2LabelClassName}>
-                    <span className="block">{player}</span>
-                    {!isScramble && (
+                    {printCompact ? (
+                      <span className="block">{`${player}-${getPlayerHandicap(player) ?? '-'}`}</span>
+                    ) : (
+                      <span className="block">{player}</span>
+                    )}
+                    {!isScramble && !printCompact && (
                       <span className="mt-1 block text-[10px] normal-case tracking-normal text-emerald-700/80 dark:text-emerald-200/80">
                         HCP {getPlayerHandicap(player) ?? '-'}{printCompact ? '' : ` · Gets ${getStrokesReceived(player)}`}
                       </span>
