@@ -370,7 +370,7 @@ export default function Scorecard({
             <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{isScramble ? 'Team scoring' : 'Player scoring'}</p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            {pairingId && (
+            {pairingId && !printCompact && (
               <span
                 className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
                   loadState === 'error' || saveState === 'error'
