@@ -346,6 +346,18 @@ export default function Scorecard({
       : `${leadingTeamLabel} earns 1 tournament point`
     : 'Tournament points pending until all 9 holes are complete';
 
+  const renderScoreField = (value: string | undefined) => {
+    if (printCompact) {
+      return (
+        <div className="print-score-slot">
+          {value ? <span>{value}</span> : <span className="print-score-line" />}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   const renderNine = (nine: typeof frontNine, isBack: boolean = false) => {
     const scoreColumnLabel = isSingleNine ? 'Tot' : isBack ? 'In' : 'Out';
     const holeStrokeRanks = getHoleStrokeRanks(nine);
@@ -443,15 +455,19 @@ export default function Scorecard({
                 <td className={team1LabelClassName}>Team 1</td>
                 {nine.holes.map((hole, idx) => (
                   <td key={idx} className="border px-2 py-2 text-center text-xs">
-                    <input
-                      type="number"
-                      min="0"
-                      max={getMaxGrossScoreForHole(hole)}
-                      value={team1Scores[hole] || ''}
-                      onChange={(e) => handleTeam1ScoreChange(hole, e.target.value)}
-                      className={inputClassName}
-                      placeholder={String(getMaxGrossScoreForHole(hole))}
-                    />
+                    {printCompact ? (
+                      renderScoreField(team1Scores[hole])
+                    ) : (
+                      <input
+                        type="number"
+                        min="0"
+                        max={getMaxGrossScoreForHole(hole)}
+                        value={team1Scores[hole] || ''}
+                        onChange={(e) => handleTeam1ScoreChange(hole, e.target.value)}
+                        className={inputClassName}
+                        placeholder={String(getMaxGrossScoreForHole(hole))}
+                      />
+                    )}
                   </td>
                 ))}
                 {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) || '-'}</td>}
@@ -461,15 +477,19 @@ export default function Scorecard({
                 <td className={team2LabelClassName}>Team 2</td>
                 {nine.holes.map((hole, idx) => (
                   <td key={idx} className="border px-2 py-2 text-center text-xs">
-                    <input
-                      type="number"
-                      min="0"
-                      max={getMaxGrossScoreForHole(hole)}
-                      value={team2Scores[hole] || ''}
-                      onChange={(e) => handleTeam2ScoreChange(hole, e.target.value)}
-                      className={inputClassName}
-                      placeholder={String(getMaxGrossScoreForHole(hole))}
-                    />
+                    {printCompact ? (
+                      renderScoreField(team2Scores[hole])
+                    ) : (
+                      <input
+                        type="number"
+                        min="0"
+                        max={getMaxGrossScoreForHole(hole)}
+                        value={team2Scores[hole] || ''}
+                        onChange={(e) => handleTeam2ScoreChange(hole, e.target.value)}
+                        className={inputClassName}
+                        placeholder={String(getMaxGrossScoreForHole(hole))}
+                      />
+                    )}
                   </td>
                 ))}
                 {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) || '-'}</td>}
@@ -502,15 +522,19 @@ export default function Scorecard({
                           <span className="h-2 w-2 rounded-full bg-sky-500 dark:bg-sky-300" />
                         </div>
                       )}
-                      <input
-                        type="number"
-                        min="0"
-                        max={getMaxGrossScoreForHole(hole, player)}
-                        value={team1PlayerScores[player]?.[hole] || ''}
-                        onChange={(e) => handleTeam1PlayerScoreChange(player, hole, e.target.value)}
-                        className={inputClassName}
-                        placeholder={String(getMaxGrossScoreForHole(hole, player))}
-                      />
+                      {printCompact ? (
+                        renderScoreField(team1PlayerScores[player]?.[hole])
+                      ) : (
+                        <input
+                          type="number"
+                          min="0"
+                          max={getMaxGrossScoreForHole(hole, player)}
+                          value={team1PlayerScores[player]?.[hole] || ''}
+                          onChange={(e) => handleTeam1PlayerScoreChange(player, hole, e.target.value)}
+                          className={inputClassName}
+                          placeholder={String(getMaxGrossScoreForHole(hole, player))}
+                        />
+                      )}
                     </td>
                   ))}
                   {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
@@ -541,15 +565,19 @@ export default function Scorecard({
                           <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-300" />
                         </div>
                       )}
-                      <input
-                        type="number"
-                        min="0"
-                        max={getMaxGrossScoreForHole(hole, player)}
-                        value={team2PlayerScores[player]?.[hole] || ''}
-                        onChange={(e) => handleTeam2PlayerScoreChange(player, hole, e.target.value)}
-                        className={inputClassName}
-                        placeholder={String(getMaxGrossScoreForHole(hole, player))}
-                      />
+                      {printCompact ? (
+                        renderScoreField(team2PlayerScores[player]?.[hole])
+                      ) : (
+                        <input
+                          type="number"
+                          min="0"
+                          max={getMaxGrossScoreForHole(hole, player)}
+                          value={team2PlayerScores[player]?.[hole] || ''}
+                          onChange={(e) => handleTeam2PlayerScoreChange(player, hole, e.target.value)}
+                          className={inputClassName}
+                          placeholder={String(getMaxGrossScoreForHole(hole, player))}
+                        />
+                      )}
                     </td>
                   ))}
                   {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}

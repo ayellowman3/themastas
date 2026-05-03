@@ -108,18 +108,16 @@ export default function Matches() {
                             <span>{match.course} · {match.nine}</span>
                             <span>{match.format}</span>
                           </div>
-                          <div className="mt-1 grid grid-cols-2 gap-2 text-[10px] text-black">
+                          <div className="mt-1 text-[10px] text-black">
                             <p>
-                              <span className="font-semibold">Team 1:</span>{' '}
+                              <span className="font-semibold">{match.format.includes('Scramble') ? '2v2:' : 'Matchup:'}</span>{' '}
                               {getPairingPlayerDetails(pairing.team1, TEAM1_PLAYERS)
                                 .map((player) => `${player.name} (${player.nineHoleHandicap})`)
-                                .join(', ')}
-                            </p>
-                            <p>
-                              <span className="font-semibold">Team 2:</span>{' '}
+                                .join(' / ')}{' '}
+                              vs{' '}
                               {getPairingPlayerDetails(pairing.team2, TEAM2_PLAYERS)
                                 .map((player) => `${player.name} (${player.nineHoleHandicap})`)
-                                .join(', ')}
+                                .join(' / ')}
                             </p>
                           </div>
                         </div>
