@@ -35,6 +35,9 @@ export interface PairingPlayerDetail {
   nineHoleHandicap: number;
 }
 
+export const TEAM1_NAME = 'Marlboro Reads';
+export const TEAM2_NAME = 'The Samdicapped';
+
 export const TEAM1_PLAYERS = {
   '1': 'Kyung',
   '2': 'Tommy',

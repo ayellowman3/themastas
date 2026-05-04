@@ -1,5 +1,7 @@
 'use client';
 
+import { TEAM1_NAME, TEAM2_NAME } from '@/lib/tournament';
+
 import { useEffect, useRef, useState } from 'react';
 
 import type { ScorecardData } from '../lib/tournament';
@@ -192,7 +194,7 @@ export default function Scorecard({
   const inputClassName =
     'h-7 w-9 rounded-md border border-white/70 bg-white/90 text-center text-[11px] font-semibold text-slate-700 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 sm:h-8 sm:w-10 sm:rounded-lg sm:text-xs dark:border-slate-600 dark:bg-slate-800/90 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-900';
   const labelBaseClassName =
-    'sticky left-0 z-10 border px-2 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.18em]';
+    'sticky left-0 z-10 min-w-[132px] border px-2 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.14em] break-words sm:min-w-[156px] sm:text-[11px] sm:tracking-[0.18em]';
   const team1LabelClassName = `${labelBaseClassName} bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-200`;
   const team2LabelClassName = `${labelBaseClassName} bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-200`;
   const statCellClassName =
@@ -330,7 +332,7 @@ export default function Scorecard({
   const halvedHoles = holeOutcomes.filter((outcome) => outcome === 'halve').length;
   const holeMargin = Math.abs(team1HoleWins - team2HoleWins);
   const allMatchHolesComplete = completedHoleCount === matchHoles.length;
-  const leadingTeamLabel = team1HoleWins > team2HoleWins ? 'Team 1' : team2HoleWins > team1HoleWins ? 'Team 2' : null;
+  const leadingTeamLabel = team1HoleWins > team2HoleWins ? TEAM1_NAME : team2HoleWins > team1HoleWins ? TEAM2_NAME : null;
 
   const matchResultLabel = allMatchHolesComplete
     ? team1HoleWins === team2HoleWins
@@ -414,7 +416,7 @@ export default function Scorecard({
         <table className="w-full min-w-[640px] border-collapse text-xs sm:min-w-[760px]">
         <thead>
           <tr className="bg-slate-100/90 text-slate-600 dark:bg-slate-800 dark:text-slate-200">
-            <th className="sticky left-0 z-20 min-w-[88px] border bg-slate-100/95 px-2 py-2 text-left text-[10px] uppercase tracking-[0.14em] sm:min-w-[110px] sm:text-[11px] sm:tracking-[0.18em] dark:bg-slate-800/95">Hole</th>
+            <th className="sticky left-0 z-20 min-w-[132px] border bg-slate-100/95 px-2 py-2 text-left text-[10px] uppercase tracking-[0.14em] sm:min-w-[156px] sm:text-[11px] sm:tracking-[0.18em] dark:bg-slate-800/95">Hole</th>
             {nine.holes.map((hole) => (
               <th key={hole} className="border px-1.5 py-2 text-center text-[10px] sm:px-2 sm:text-[11px]">{hole}</th>
             ))}
@@ -461,7 +463,7 @@ export default function Scorecard({
           {isScramble ? (
             <>
               <tr>
-                <td className={team1LabelClassName}>Team 1</td>
+                <td className={team1LabelClassName}>{TEAM1_NAME}</td>
                 {nine.holes.map((hole, idx) => (
                   <td key={idx} className="border px-2 py-2 text-center text-xs">
                     {printCompact ? (
@@ -483,7 +485,7 @@ export default function Scorecard({
                 {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0)) || '-'}</td>}
               </tr>
               <tr>
-                <td className={team2LabelClassName}>Team 2</td>
+                <td className={team2LabelClassName}>{TEAM2_NAME}</td>
                 {nine.holes.map((hole, idx) => (
                   <td key={idx} className="border px-2 py-2 text-center text-xs">
                     {printCompact ? (

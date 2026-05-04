@@ -2,6 +2,7 @@ import Link from 'next/link';
 import PageContainer from '../components/PageContainer';
 import SectionCard from '../components/SectionCard';
 import ProgressBar from '../components/ProgressBar';
+import { TEAM1_NAME, TEAM2_NAME } from '../lib/tournament';
 
 export default function Home() {
   return (
@@ -39,8 +40,8 @@ export default function Home() {
       </SectionCard>
 
       <SectionCard title="Current Standings">
-        <ProgressBar label="Team 1" current={0} total={27} />
-        <ProgressBar label="Team 2" current={0} total={27} />
+        <ProgressBar label={TEAM1_NAME} current={0} total={27} />
+        <ProgressBar label={TEAM2_NAME} current={0} total={27} />
       </SectionCard>
     </PageContainer>
   );

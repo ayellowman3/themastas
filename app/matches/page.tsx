@@ -12,7 +12,9 @@ import {
   getScorecard,
   isPairingComplete,
   TEAM1_PLAYERS,
+  TEAM1_NAME,
   TEAM2_PLAYERS,
+  TEAM2_NAME,
 } from '../../lib/tournament';
 
 function chunkPairings<T>(items: T[], size: number) {
@@ -26,8 +28,8 @@ function chunkPairings<T>(items: T[], size: number) {
 }
 
 const BOOKLET_COVERS = [
-  ...Object.values(TEAM1_PLAYERS).map((player) => ({ teamName: 'Team Read', playerName: player })),
-  ...Object.values(TEAM2_PLAYERS).map((player) => ({ teamName: 'Team Sam', playerName: player })),
+  ...Object.values(TEAM1_PLAYERS).map((player) => ({ teamName: TEAM1_NAME, playerName: player })),
+  ...Object.values(TEAM2_PLAYERS).map((player) => ({ teamName: TEAM2_NAME, playerName: player })),
 ];
 
 export default function Matches() {
@@ -144,17 +146,17 @@ export default function Matches() {
                             </div>
                             <div className="flex flex-wrap gap-2">
                               <span className="rounded-full bg-sky-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-800 dark:bg-sky-950/80 dark:text-sky-200">
-                                Team 1: {isPairingComplete(pairing) ? formatMatchPoints(pairing.team1Score) : 'Pending'}
+                                {TEAM1_NAME}: {isPairingComplete(pairing) ? formatMatchPoints(pairing.team1Score) : 'Pending'}
                               </span>
                               <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-200">
-                                Team 2: {isPairingComplete(pairing) ? formatMatchPoints(pairing.team2Score) : 'Pending'}
+                                {TEAM2_NAME}: {isPairingComplete(pairing) ? formatMatchPoints(pairing.team2Score) : 'Pending'}
                               </span>
                             </div>
                           </div>
 
                           <div className="grid gap-3 p-3 sm:p-4 lg:grid-cols-2">
                             <div className="rounded-2xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-white p-3 sm:p-4 dark:border-sky-900 dark:from-sky-950/40 dark:to-slate-900">
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700 dark:text-sky-300">Team 1</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700 dark:text-sky-300">{TEAM1_NAME}</p>
                               <div className="mt-3 flex flex-wrap gap-2">
                                 {getPairingPlayerDetails(pairing.team1, TEAM1_PLAYERS).map((player) => (
                                   <div key={`team1-${player.number}`} className="rounded-2xl border border-sky-200/80 bg-white/90 px-3 py-2 shadow-sm dark:border-sky-900 dark:bg-slate-900/80">
@@ -170,7 +172,7 @@ export default function Matches() {
                             </div>
 
                             <div className="rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-white p-3 sm:p-4 dark:border-emerald-900 dark:from-emerald-950/40 dark:to-slate-900">
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Team 2</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">{TEAM2_NAME}</p>
                               <div className="mt-3 flex flex-wrap gap-2">
                                 {getPairingPlayerDetails(pairing.team2, TEAM2_PLAYERS).map((player) => (
                                   <div key={`team2-${player.number}`} className="rounded-2xl border border-emerald-200/80 bg-white/90 px-3 py-2 shadow-sm dark:border-emerald-900 dark:bg-slate-900/80">

@@ -1,5 +1,6 @@
 import PageContainer from '../../components/PageContainer';
 import SectionCard from '../../components/SectionCard';
+import { TEAM1_NAME, TEAM2_NAME } from '../../lib/tournament';
 
 export default function Teams() {
   return (
@@ -7,7 +8,7 @@ export default function Teams() {
       <SectionCard title="Teams">
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-xl font-semibold mb-4">Team 1</h3>
+            <h3 className="text-xl font-semibold mb-4">{TEAM1_NAME}</h3>
             <ul className="space-y-2">
               <li className="flex justify-between"><span>Kyung</span> <span className="font-semibold text-blue-600">#1</span></li>
               <li className="flex justify-between"><span>Tommy</span> <span className="font-semibold text-blue-600">#2</span></li>
@@ -18,7 +19,7 @@ export default function Teams() {
             </ul>
           </div>
           <div>
-            <h3 className="text-xl font-semibold mb-4">Team 2</h3>
+            <h3 className="text-xl font-semibold mb-4">{TEAM2_NAME}</h3>
             <ul className="space-y-2">
               <li className="flex justify-between"><span>Min Woo</span> <span className="font-semibold text-green-600">#1</span></li>
               <li className="flex justify-between"><span>Andy</span> <span className="font-semibold text-green-600">#2</span></li>
