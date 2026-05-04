@@ -180,11 +180,15 @@ body {
   }
 
   .print-matchbook .pairing-print-card:not(:last-child)::after {
+    content: none;
+  }
+
+  .print-matchbook .pairing-print-card:not(:first-child)::before {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0;
+    top: 0;
     border-top: 1.5px dashed #000;
   }
 
