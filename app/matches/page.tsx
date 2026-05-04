@@ -170,7 +170,7 @@ export default function Matches() {
                         </div>
 
                         <div className="hidden print:block print:px-2 print:pb-2">
-                          <div className="pairing-print-scorecard rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
+                          <div className={`pairing-print-scorecard ${match.format.includes('Scramble') ? 'print-scramble-card' : ''} rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950`}>
                             <Scorecard
                               pairingId={pairing.id}
                               courseName={`${match.course} - ${match.nine}`}
