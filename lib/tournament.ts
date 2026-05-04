@@ -25,14 +25,16 @@ export interface MatchSeed {
 
 export interface PlayerHandicap {
   index: number;
-  nineHole: number;
+  singlesNineHole: number;
+  bestBallNineHole: number;
 }
 
 export interface PairingPlayerDetail {
   number: string;
   name: string;
   handicapIndex: number;
-  nineHoleHandicap: number;
+  singlesNineHoleHandicap: number;
+  bestBallNineHoleHandicap: number;
 }
 
 export const TEAM1_NAME = 'Marlboro Reads';
@@ -57,18 +59,18 @@ export const TEAM2_PLAYERS = {
 } as const;
 
 export const PLAYER_HANDICAPS: Record<string, PlayerHandicap> = {
-  Kyung: { index: 7, nineHole: 6 },
-  Tommy: { index: 12, nineHole: 10 },
-  George: { index: 12, nineHole: 10 },
-  Justin: { index: 14, nineHole: 12 },
-  Paul: { index: 13, nineHole: 12 },
-  Stephen: { index: 17, nineHole: 15 },
-  'Min Woo': { index: 10, nineHole: 9 },
-  Andy: { index: 11, nineHole: 9 },
-  Terry: { index: 12, nineHole: 10 },
-  Huey: { index: 17, nineHole: 15 },
-  Alex: { index: 16, nineHole: 14 },
-  Sam: { index: 17, nineHole: 15 },
+  Kyung: { index: 7, singlesNineHole: 7, bestBallNineHole: 6 },
+  Tommy: { index: 12, singlesNineHole: 12, bestBallNineHole: 10 },
+  George: { index: 12, singlesNineHole: 12, bestBallNineHole: 10 },
+  Justin: { index: 14, singlesNineHole: 14, bestBallNineHole: 12 },
+  Paul: { index: 13, singlesNineHole: 13, bestBallNineHole: 12 },
+  Stephen: { index: 17, singlesNineHole: 17, bestBallNineHole: 15 },
+  'Min Woo': { index: 10, singlesNineHole: 10, bestBallNineHole: 9 },
+  Andy: { index: 11, singlesNineHole: 11, bestBallNineHole: 9 },
+  Terry: { index: 12, singlesNineHole: 12, bestBallNineHole: 10 },
+  Huey: { index: 17, singlesNineHole: 17, bestBallNineHole: 15 },
+  Alex: { index: 16, singlesNineHole: 16, bestBallNineHole: 14 },
+  Sam: { index: 17, singlesNineHole: 17, bestBallNineHole: 15 },
 };
 
 export const SCORECARD_DATA: Record<'riversaints' | 'lakes', ScorecardData> = {
@@ -231,18 +233,19 @@ export function getPairingPlayerDetails(playerString: string, teamPlayers: Recor
       number,
       name,
       handicapIndex: handicap.index,
-      nineHoleHandicap: handicap.nineHole,
+      singlesNineHoleHandicap: handicap.singlesNineHole,
+      bestBallNineHoleHandicap: handicap.bestBallNineHole,
     });
   }
 
   return players;
 }
 
-export function getPlayerNineHoleHandicaps(players: string[]) {
+export function getPlayerNineHoleHandicaps(players: string[], matchType: 'singles' | 'best-ball') {
   return players.reduce<Record<string, number>>((acc, player) => {
     const handicap = PLAYER_HANDICAPS[player as keyof typeof PLAYER_HANDICAPS];
     if (handicap) {
-      acc[player] = handicap.nineHole;
+      acc[player] = matchType === 'singles' ? handicap.singlesNineHole : handicap.bestBallNineHole;
     }
     return acc;
   }, {});

@@ -132,6 +132,7 @@ export default function Matches() {
 
                   <div className="space-y-3 sm:space-y-4">
                     {match.pairings.map((pairing, idx) => {
+                      const isSinglesMatch = match.format.includes('Singles');
                       const team1Players = getPairingPlayers(pairing.team1, TEAM1_PLAYERS);
                       const team2Players = getPairingPlayers(pairing.team2, TEAM2_PLAYERS);
 
@@ -164,7 +165,7 @@ export default function Matches() {
                                       {player.name} <span className="text-slate-400">#{player.number}</span>
                                     </p>
                                     <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
-                                      HI {player.handicapIndex} · 9HCP {player.nineHoleHandicap}
+                                      HI {player.handicapIndex} · 9HCP {isSinglesMatch ? player.singlesNineHoleHandicap : player.bestBallNineHoleHandicap}
                                     </p>
                                   </div>
                                 ))}
@@ -180,7 +181,7 @@ export default function Matches() {
                                       {player.name} <span className="text-slate-400">#{player.number}</span>
                                     </p>
                                     <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">
-                                      HI {player.handicapIndex} · 9HCP {player.nineHoleHandicap}
+                                      HI {player.handicapIndex} · 9HCP {isSinglesMatch ? player.singlesNineHoleHandicap : player.bestBallNineHoleHandicap}
                                     </p>
                                   </div>
                                 ))}
@@ -197,8 +198,8 @@ export default function Matches() {
                                 format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
                                 team1Players={team1Players}
                                 team2Players={team2Players}
-                                team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players)}
-                                team2PlayerHandicaps={getPlayerNineHoleHandicaps(team2Players)}
+                                team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players, isSinglesMatch ? 'singles' : 'best-ball')}
+                                team2PlayerHandicaps={getPlayerNineHoleHandicaps(team2Players, isSinglesMatch ? 'singles' : 'best-ball')}
                               />
                             </div>
                           </div>
@@ -217,6 +218,7 @@ export default function Matches() {
                   <div className="rounded-[20px] bg-white/90 p-4 backdrop-blur-sm sm:rounded-[24px] sm:p-5 dark:bg-slate-900/85">
                     <div className="pairings-print-grid">
                       {pairingChunk.map((pairing) => {
+                        const isSinglesMatch = match.format.includes('Singles');
                         const team1Players = getPairingPlayers(pairing.team1, TEAM1_PLAYERS);
                         const team2Players = getPairingPlayers(pairing.team2, TEAM2_PLAYERS);
 
@@ -237,8 +239,8 @@ export default function Matches() {
                                   }
                                   team1Players={team1Players}
                                   team2Players={team2Players}
-                                  team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players)}
-                                  team2PlayerHandicaps={getPlayerNineHoleHandicaps(team2Players)}
+                                  team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players, isSinglesMatch ? 'singles' : 'best-ball')}
+                                  team2PlayerHandicaps={getPlayerNineHoleHandicaps(team2Players, isSinglesMatch ? 'singles' : 'best-ball')}
                                 />
                               </div>
                             </div>
