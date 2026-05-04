@@ -176,7 +176,9 @@ body {
   }
 
   .print-matchbook .pairing-print-card > div:nth-child(4) {
-    display: block !important;
+    display: flex !important;
+    flex: 1 1 auto !important;
+    align-items: center !important;
   }
 
   .print-matchbook .pairing-print-card:not(:last-child)::after {
