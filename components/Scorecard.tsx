@@ -194,11 +194,12 @@ export default function Scorecard({
   const inputClassName =
     'h-7 w-9 rounded-md border border-white/70 bg-white/90 text-center text-[11px] font-semibold text-slate-700 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 sm:h-8 sm:w-10 sm:rounded-lg sm:text-xs dark:border-slate-600 dark:bg-slate-800/90 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-900';
   const labelBaseClassName =
-    'sticky left-0 z-10 min-w-[132px] border px-2 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.14em] break-words sm:min-w-[156px] sm:text-[11px] sm:tracking-[0.18em]';
+    'sticky left-0 z-10 min-w-[132px] border px-2 py-3 align-middle text-left text-[10px] font-semibold uppercase tracking-[0.14em] break-words sm:min-w-[156px] sm:text-[11px] sm:tracking-[0.18em]';
   const team1LabelClassName = `${labelBaseClassName} bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-200`;
   const team2LabelClassName = `${labelBaseClassName} bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-200`;
   const statCellClassName =
     'border px-1.5 py-2 text-center text-[10px] font-semibold text-slate-600 sm:px-2 sm:text-[11px] dark:text-slate-300';
+  const scoreCellClassName = 'border px-2 py-3 text-center align-middle text-xs';
   const summaryOutClassName = 'border px-1.5 py-2 text-center text-[10px] font-semibold bg-sky-50 text-sky-700 sm:px-2 sm:text-[11px] dark:bg-sky-950/70 dark:text-sky-200';
   const summaryInClassName = 'border px-1.5 py-2 text-center text-[10px] font-semibold bg-emerald-50 text-emerald-700 sm:px-2 sm:text-[11px] dark:bg-emerald-950/70 dark:text-emerald-200';
   const summaryTotalClassName = 'border px-1.5 py-2 text-center text-[10px] font-semibold bg-amber-50 text-amber-700 sm:px-2 sm:text-[11px] dark:bg-amber-950/70 dark:text-amber-200';
@@ -465,7 +466,7 @@ export default function Scorecard({
               <tr>
                 <td className={team1LabelClassName}>{TEAM1_NAME}</td>
                 {nine.holes.map((hole, idx) => (
-                  <td key={idx} className="border px-2 py-2 text-center text-xs">
+                  <td key={idx} className={scoreCellClassName}>
                     {printCompact ? (
                       renderScoreField(team1Scores[hole])
                     ) : (
@@ -487,7 +488,7 @@ export default function Scorecard({
               <tr>
                 <td className={team2LabelClassName}>{TEAM2_NAME}</td>
                 {nine.holes.map((hole, idx) => (
-                  <td key={idx} className="border px-2 py-2 text-center text-xs">
+                  <td key={idx} className={scoreCellClassName}>
                     {printCompact ? (
                       renderScoreField(team2Scores[hole])
                     ) : (
@@ -531,7 +532,7 @@ export default function Scorecard({
                   {nine.holes.map((hole, idx) => (
                     <td
                       key={idx}
-                      className={`border px-2 py-2 text-center text-xs ${
+                      className={`${scoreCellClassName} ${
                         !isScramble && getStrokesReceived(player) >= (holeStrokeRanks.get(nine.hcp[idx]) ?? 99)
                           ? 'bg-sky-50/80 dark:bg-sky-950/40'
                           : ''
@@ -583,7 +584,7 @@ export default function Scorecard({
                   {nine.holes.map((hole, idx) => (
                     <td
                       key={idx}
-                      className={`border px-2 py-2 text-center text-xs ${
+                      className={`${scoreCellClassName} ${
                         !isScramble && getStrokesReceived(player) >= (holeStrokeRanks.get(nine.hcp[idx]) ?? 99)
                           ? 'bg-emerald-50/80 dark:bg-emerald-950/40'
                           : ''
