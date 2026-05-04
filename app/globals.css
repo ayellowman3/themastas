@@ -114,8 +114,8 @@ body {
     border: none !important;
     background: #fff !important;
     padding: 0 !important;
-    height: calc(11in - 0.9in);
-    min-height: calc(11in - 0.9in);
+    height: calc(11in - 0.96in);
+    min-height: calc(11in - 0.96in);
   }
 
   .print-matchbook .print-match-sheet:last-child {
@@ -188,7 +188,7 @@ body {
     position: absolute;
     left: 0;
     right: 0;
-    top: 0;
+    top: -0.02in;
     border-top: 1.5px dashed #000;
   }
 
@@ -243,7 +243,7 @@ body {
   .print-matchbook .space-y-4 > :not([hidden]) ~ :not([hidden]),
   .print-matchbook .space-y-3 > :not([hidden]) ~ :not([hidden]),
   .print-matchbook .space-y-2 > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 0.02in !important;
+    margin-top: 0 !important;
   }
 
   .print-matchbook .overflow-x-auto,
