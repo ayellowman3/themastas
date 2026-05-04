@@ -10,6 +10,7 @@ interface ScorecardProps {
   data: ScorecardData;
   format?: 'best-ball' | 'scramble';
   printCompact?: boolean;
+  printCompactMatchup?: string;
   team1Players?: string[];
   team2Players?: string[];
   team1PlayerHandicaps?: Record<string, number>;
@@ -26,6 +27,7 @@ export default function Scorecard({
   data,
   format = 'scramble',
   printCompact = false,
+  printCompactMatchup,
   team1Players = [],
   team2Players = [],
   team1PlayerHandicaps = {},
@@ -367,8 +369,15 @@ export default function Scorecard({
         <div className="flex flex-col gap-2 border-b border-slate-200/70 bg-gradient-to-r from-slate-50 via-white to-emerald-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/40">
           <div>
             <p className="text-sm font-semibold text-slate-900 dark:text-white">{getSectionTitle(isBack)}</p>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{isScramble ? 'Team scoring' : 'Player scoring'}</p>
+            {!printCompactMatchup && (
+              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{isScramble ? 'Team scoring' : 'Player scoring'}</p>
+            )}
           </div>
+          {printCompact && printCompactMatchup && (
+            <div className="text-center text-[10px] font-semibold text-slate-700 dark:text-slate-200">
+              {printCompactMatchup}
+            </div>
+          )}
           <div className="flex items-center gap-2 self-start sm:self-auto">
             {pairingId && !printCompact && (
               <span
@@ -502,7 +511,12 @@ export default function Scorecard({
                 <tr key={`t1-${player}`}>
                   <td className={team1LabelClassName}>
                     {printCompact ? (
-                      <span className="block">{`${player}-${getPlayerHandicap(player) ?? '-'}`}</span>
+                      <span className="block">
+                        {`${player}-${getPlayerHandicap(player) ?? '-'}`}
+                        {!isScramble && getStrokesReceived(player) > 0 && (
+                          <span className="ml-1 inline-block h-2 w-2 rounded-full bg-sky-500 align-middle dark:bg-sky-300" />
+                        )}
+                      </span>
                     ) : (
                       <span className="block">{player}</span>
                     )}
@@ -549,7 +563,12 @@ export default function Scorecard({
                 <tr key={`t2-${player}`}>
                   <td className={team2LabelClassName}>
                     {printCompact ? (
-                      <span className="block">{`${player}-${getPlayerHandicap(player) ?? '-'}`}</span>
+                      <span className="block">
+                        {`${player}-${getPlayerHandicap(player) ?? '-'}`}
+                        {!isScramble && getStrokesReceived(player) > 0 && (
+                          <span className="ml-1 inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle dark:bg-emerald-300" />
+                        )}
+                      </span>
                     ) : (
                       <span className="block">{player}</span>
                     )}

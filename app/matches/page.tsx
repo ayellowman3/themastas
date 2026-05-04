@@ -170,12 +170,6 @@ export default function Matches() {
                         </div>
 
                         <div className="hidden print:block print:px-2 print:pb-2">
-                          {match.format.includes('Scramble') && (
-                            <p className="mb-1 text-center text-[10px] font-semibold text-black">
-                              {getPairingPlayerDetails(pairing.team1, TEAM1_PLAYERS).map((player) => player.name).join(' / ')} vs{' '}
-                              {getPairingPlayerDetails(pairing.team2, TEAM2_PLAYERS).map((player) => player.name).join(' / ')}
-                            </p>
-                          )}
                           <div className="pairing-print-scorecard rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
                             <Scorecard
                               pairingId={pairing.id}
@@ -183,6 +177,11 @@ export default function Matches() {
                               data={getScorecard(match.course, match.nine)}
                               format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
                               printCompact
+                              printCompactMatchup={
+                                match.format.includes('Scramble')
+                                  ? `${getPairingPlayerDetails(pairing.team1, TEAM1_PLAYERS).map((player) => player.name).join(' / ')} vs ${getPairingPlayerDetails(pairing.team2, TEAM2_PLAYERS).map((player) => player.name).join(' / ')}`
+                                  : undefined
+                              }
                               team1Players={team1Players}
                               team2Players={team2Players}
                               team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players)}
