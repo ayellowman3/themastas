@@ -154,12 +154,13 @@ body {
     gap: 0.04in !important;
   }
 
+  .print-matchbook .pairing-print-card > div:nth-child(1),
   .print-matchbook .pairing-print-card > div:nth-child(2),
   .print-matchbook .pairing-print-card > div:nth-child(3) {
     display: none !important;
   }
 
-  .print-matchbook .pairing-print-card > div:first-child {
+  .print-matchbook .pairing-print-card > div:nth-child(4) {
     display: block !important;
   }
 
