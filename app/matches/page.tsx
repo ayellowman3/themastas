@@ -25,6 +25,11 @@ function chunkPairings<T>(items: T[], size: number) {
   return chunks;
 }
 
+const BOOKLET_COVERS = [
+  ...Object.values(TEAM1_PLAYERS).map((player) => ({ teamName: 'Team Read', playerName: player })),
+  ...Object.values(TEAM2_PLAYERS).map((player) => ({ teamName: 'Team Sam', playerName: player })),
+];
+
 export default function Matches() {
   return (
     <PageContainer>
@@ -61,6 +66,23 @@ export default function Matches() {
             </div>
             </div>
           </div>
+        </div>
+
+        <div className="hidden print:block">
+          {chunkPairings(BOOKLET_COVERS, 3).map((coverChunk, chunkIndex) => (
+            <div key={`cover-page-${chunkIndex}`} className="print-match-sheet print-cover-sheet">
+              <div className="print-cover-grid">
+                {coverChunk.map((cover) => (
+                  <div key={`${cover.teamName}-${cover.playerName}`} className="print-cover-card">
+                    <div className="print-cover-page-inner">
+                      <p className="print-cover-team">{cover.teamName}</p>
+                      <h1 className="print-cover-player">{cover.playerName}</h1>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="space-y-8">

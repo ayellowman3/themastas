@@ -123,6 +123,52 @@ body {
     page-break-after: auto;
   }
 
+  .print-matchbook .print-cover-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(3, calc(100% / 3));
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  .print-matchbook .print-cover-card {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .print-matchbook .print-cover-card:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -0.02in;
+    border-top: 1.5px dashed #000;
+  }
+
+  .print-matchbook .print-cover-page-inner {
+    width: 100%;
+    text-align: center;
+  }
+
+  .print-matchbook .print-cover-team {
+    margin: 0 0 0.22in 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .print-matchbook .print-cover-player {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .print-matchbook .print-match-sheet > div {
     background: #fff !important;
     padding: 0 !important;
@@ -178,13 +224,7 @@ body {
     justify-content: center !important;
   }
 
-  .print-matchbook .pairing-print-card > div:nth-child(1),
-  .print-matchbook .pairing-print-card > div:nth-child(2),
-  .print-matchbook .pairing-print-card > div:nth-child(3) {
-    display: none !important;
-  }
-
-  .print-matchbook .pairing-print-card > div:nth-child(4) {
+  .print-matchbook .pairing-print-card > div:first-child {
     display: flex !important;
     flex: 1 1 auto !important;
     align-items: center !important;
