@@ -114,6 +114,8 @@ body {
     border: none !important;
     background: #fff !important;
     padding: 0 !important;
+    height: calc(11in - 0.9in);
+    min-height: calc(11in - 0.9in);
   }
 
   .print-matchbook .print-match-sheet:last-child {
@@ -124,21 +126,29 @@ body {
   .print-matchbook .print-match-sheet > div {
     background: #fff !important;
     padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
   }
 
   .print-matchbook .pairing-print-card {
     break-inside: avoid;
     page-break-inside: avoid;
-    height: 100%;
+    height: calc(100% / 3);
+    min-height: calc(100% / 3);
     border: none !important;
     position: relative;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
   }
 
   .print-matchbook .pairings-print-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    grid-template-rows: repeat(3, minmax(0, 1fr));
-    gap: 0.04in !important;
+    grid-template-rows: repeat(3, calc(100% / 3));
+    gap: 0 !important;
+    height: 100% !important;
   }
 
   .print-matchbook .pairing-print-card > div:first-child {
@@ -174,7 +184,7 @@ body {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -0.02in;
+    bottom: 0;
     border-top: 1.5px dashed #000;
   }
 
@@ -281,5 +291,14 @@ body {
     width: 100%;
     border-bottom: 1px solid #000;
     height: 10px;
+  }
+
+  .print-matchbook .pairing-print-scorecard .bg-sky-500,
+  .print-matchbook .pairing-print-scorecard .bg-emerald-500,
+  .print-matchbook .pairing-print-scorecard .bg-sky-300,
+  .print-matchbook .pairing-print-scorecard .bg-emerald-300 {
+    background: #000 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
