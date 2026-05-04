@@ -418,7 +418,7 @@ export default function Scorecard({
             {nine.holes.map((hole) => (
               <th key={hole} className="border px-1.5 py-2 text-center text-[10px] sm:px-2 sm:text-[11px]">{hole}</th>
             ))}
-            {!printCompact && <th className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{scoreColumnLabel}</th>}
+            <th className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{scoreColumnLabel}</th>
             {!printCompact && isBack && <th className={summaryTotalClassName}>Tot</th>}
           </tr>
         </thead>
@@ -437,7 +437,7 @@ export default function Scorecard({
                   </span>
                 </td>
               ))}
-              {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>}
+              <td className={isSingleNine ? summaryTotalClassName : isBack ? emptySummaryClassName : emptySummaryClassName}></td>
               {!printCompact && isBack && <td className={emptySummaryClassName}></td>}
             </tr>
           )}
@@ -446,7 +446,7 @@ export default function Scorecard({
             {nine.yds.map((yds, idx) => (
               <td key={idx} className={statCellClassName}>{yds}</td>
             ))}
-            {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontYards : isBack ? backYards : frontYards}</td>}
+            <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontYards : isBack ? backYards : frontYards}</td>
             {!printCompact && isBack && <td className={summaryTotalClassName}>{totalYards}</td>}
           </tr>
           <tr>
@@ -454,7 +454,7 @@ export default function Scorecard({
             {nine.par.map((par, idx) => (
               <td key={idx} className={statCellClassName}>{par}</td>
             ))}
-            {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontTotal : isBack ? backTotal : frontTotal}</td>}
+            <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{isSingleNine ? frontTotal : isBack ? backTotal : frontTotal}</td>
             {!printCompact && isBack && <td className={summaryTotalClassName}>{totalPar}</td>}
           </tr>
           
@@ -479,7 +479,7 @@ export default function Scorecard({
                     )}
                   </td>
                 ))}
-                {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) || '-'}</td>}
+                <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) || '-'}</td>
                 {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1Scores[h] || '0') || 0), 0)) || '-'}</td>}
               </tr>
               <tr>
@@ -501,7 +501,7 @@ export default function Scorecard({
                     )}
                   </td>
                 ))}
-                {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) || '-'}</td>}
+                <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{(isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) || '-'}</td>
                 {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team2Scores[h] || '0') || 0), 0)) || '-'}</td>}
               </tr>
             </>
@@ -555,7 +555,7 @@ export default function Scorecard({
                       )}
                     </td>
                   ))}
-                  {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
+                  <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>
                   {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team1PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
                 </tr>
               ))}
@@ -607,7 +607,7 @@ export default function Scorecard({
                       )}
                     </td>
                   ))}
-                  {!printCompact && <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
+                  <td className={isSingleNine ? summaryTotalClassName : isBack ? summaryInClassName : summaryOutClassName}>{((isSingleNine ? nine.holes : isBack ? backNine.holes : frontNine.holes).reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>
                   {!printCompact && isBack && <td className={summaryTotalClassName}>{(frontNine.holes.reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0) + backNine.holes.reduce((sum, h) => sum + (parseInt(team2PlayerScores[player]?.[h] || '0') || 0), 0)) || '-'}</td>}
                 </tr>
               ))}
