@@ -175,6 +175,24 @@ body {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
+    position: relative !important;
+  }
+
+  .print-matchbook .print-match-sheet > div::before,
+  .print-matchbook .print-match-sheet > div::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1.5px dashed #000;
+  }
+
+  .print-matchbook .print-match-sheet > div::before {
+    top: -0.02in;
+  }
+
+  .print-matchbook .print-match-sheet > div::after {
+    bottom: -0.02in;
   }
 
   .print-matchbook .pairing-print-card {
