@@ -113,7 +113,7 @@ body {
     page-break-after: always;
     border: none !important;
     background: #fff !important;
-    padding: 1in 0 0 0 !important;
+    padding: 1in 0 0 calc(0.5in + 1cm) !important;
     height: calc(11in - 1.96in);
     min-height: calc(11in - 1.96in);
   }
@@ -179,6 +179,7 @@ body {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
+    width: calc(100% + 1cm) !important;
     position: relative !important;
   }
 
@@ -337,6 +338,12 @@ body {
     padding: 2px 3px !important;
     border-color: rgba(0, 0, 0, 0.45) !important;
     font-size: 9px !important;
+  }
+
+  .print-matchbook th:first-child,
+  .print-matchbook td:first-child {
+    min-width: 0.95in !important;
+    width: 0.95in !important;
   }
 
   .print-matchbook .sticky {
