@@ -183,6 +183,10 @@ body {
     position: relative !important;
   }
 
+  .print-matchbook .print-cover-sheet:first-child > div {
+    transform: translateY(-0.6cm) !important;
+  }
+
   .print-matchbook .print-match-sheet > div::before,
   .print-matchbook .print-match-sheet > div::after {
     content: '';
