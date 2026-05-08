@@ -1,6 +1,14 @@
 import PageContainer from '../../components/PageContainer';
 import SectionCard from '../../components/SectionCard';
-import { TEAM1_NAME, TEAM2_NAME } from '../../lib/tournament';
+import {
+  getBestBallNineHoleHandicap,
+  getSinglesNineHoleHandicap,
+  PLAYER_HANDICAPS,
+  TEAM1_NAME,
+  TEAM1_PLAYERS,
+  TEAM2_NAME,
+  TEAM2_PLAYERS,
+} from '../../lib/tournament';
 
 export default function Teams() {
   return (
@@ -10,23 +18,39 @@ export default function Teams() {
           <div>
             <h3 className="text-xl font-semibold mb-4">{TEAM1_NAME}</h3>
             <ul className="space-y-2">
-              <li className="flex justify-between"><span>Kyung</span> <span className="font-semibold text-blue-600">#1</span></li>
-              <li className="flex justify-between"><span>Tommy</span> <span className="font-semibold text-blue-600">#2</span></li>
-              <li className="flex justify-between"><span>George</span> <span className="font-semibold text-blue-600">#3</span></li>
-              <li className="flex justify-between"><span>Justin</span> <span className="font-semibold text-blue-600">#4</span></li>
-              <li className="flex justify-between"><span>Paul</span> <span className="font-semibold text-blue-600">#5</span></li>
-              <li className="flex justify-between border-t pt-2 mt-2"><span><strong>Stephen (Captain)</strong></span> <span className="font-semibold text-blue-600">#6</span></li>
+              {Object.entries(TEAM1_PLAYERS).map(([number, name], index) => {
+                const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
+                return (
+                  <li key={name} className={`flex items-start justify-between gap-4 ${index === 5 ? 'border-t pt-2 mt-2' : ''}`}>
+                    <span>
+                      {name === 'Stephen' ? <strong>Stephen (Captain)</strong> : name}
+                      <span className="mt-1 block text-xs text-slate-500">
+                        18HCP {handicap.eighteenHole} · 1v1 {getSinglesNineHoleHandicap(handicap.eighteenHole)} · BB {getBestBallNineHoleHandicap(handicap.eighteenHole)}
+                      </span>
+                    </span>
+                    <span className="font-semibold text-blue-600">#{number}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div>
             <h3 className="text-xl font-semibold mb-4">{TEAM2_NAME}</h3>
             <ul className="space-y-2">
-              <li className="flex justify-between"><span>Min Woo</span> <span className="font-semibold text-green-600">#1</span></li>
-              <li className="flex justify-between"><span>Andy</span> <span className="font-semibold text-green-600">#2</span></li>
-              <li className="flex justify-between"><span>Terry</span> <span className="font-semibold text-green-600">#3</span></li>
-              <li className="flex justify-between"><span>Huey</span> <span className="font-semibold text-green-600">#4</span></li>
-              <li className="flex justify-between"><span>Alex</span> <span className="font-semibold text-green-600">#5</span></li>
-              <li className="flex justify-between border-t pt-2 mt-2"><span><strong>Sam (Captain)</strong></span> <span className="font-semibold text-green-600">#6</span></li>
+              {Object.entries(TEAM2_PLAYERS).map(([number, name], index) => {
+                const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
+                return (
+                  <li key={name} className={`flex items-start justify-between gap-4 ${index === 5 ? 'border-t pt-2 mt-2' : ''}`}>
+                    <span>
+                      {name === 'Sam' ? <strong>Sam (Captain)</strong> : name}
+                      <span className="mt-1 block text-xs text-slate-500">
+                        18HCP {handicap.eighteenHole} · 1v1 {getSinglesNineHoleHandicap(handicap.eighteenHole)} · BB {getBestBallNineHoleHandicap(handicap.eighteenHole)}
+                      </span>
+                    </span>
+                    <span className="font-semibold text-green-600">#{number}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

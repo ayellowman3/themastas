@@ -10,7 +10,7 @@ interface ScorecardProps {
   pairingId?: string;
   courseName: string;
   data: ScorecardData;
-  format?: 'best-ball' | 'scramble';
+  format?: 'best-ball' | 'scramble' | 'singles';
   printCompact?: boolean;
   printCompactMatchup?: string;
   team1Players?: string[];
@@ -40,6 +40,7 @@ export default function Scorecard({
   initialTeam2PlayerScores = {},
 }: ScorecardProps) {
   const isScramble = format === 'scramble';
+  const isSingles = format === 'singles';
   const [team1Scores, setTeam1Scores] = useState<Record<number, string>>(initialTeam1Scores);
   const [team2Scores, setTeam2Scores] = useState<Record<number, string>>(initialTeam2Scores);
   const [team1PlayerScores, setTeam1PlayerScores] = useState<Record<string, Record<number, string>>>(initialTeam1PlayerScores);
@@ -409,7 +410,7 @@ export default function Scorecard({
               Swipe table
             </span>
             <div className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white dark:bg-slate-100 dark:text-slate-900">
-            {isScramble ? 'Scramble' : 'Best Ball'}
+            {isScramble ? 'Scramble' : isSingles ? '1v1' : 'Best Ball'}
             </div>
           </div>
         </div>

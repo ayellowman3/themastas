@@ -2,6 +2,15 @@ import PageContainer from '../../components/PageContainer';
 import SectionCard from '../../components/SectionCard';
 import Scorecard from '../../components/Scorecard';
 import PrintButton from '../../components/PrintButton';
+import {
+  getBestBallNineHoleHandicap,
+  getSinglesNineHoleHandicap,
+  PLAYER_HANDICAPS,
+  TEAM1_NAME,
+  TEAM1_PLAYERS,
+  TEAM2_NAME,
+  TEAM2_PLAYERS,
+} from '../../lib/tournament';
 
 export default function Scorecards() {
   const lakesData = {
@@ -42,6 +51,38 @@ export default function Scorecards() {
               <p>Scramble matches use triple bogey maximum score per hole.</p>
               <p>Best ball and singles use net triple bogey maximum score per hole.</p>
               <p>River Course uses Blue/Gold composite tees; the tee row shows the correct tee on every hole.</p>
+            </div>
+          </div>
+
+          <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-5 print:mb-4 print:rounded-none print:border-black/30 print:p-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 print:text-black">Handicap Reference</p>
+            <div className="mt-3 grid gap-4 text-sm text-slate-700 print:gap-3 print:text-[11px] print:text-black md:grid-cols-2">
+              <div>
+                <p className="font-semibold">{TEAM1_NAME}</p>
+                <ul className="mt-2 space-y-1">
+                  {Object.values(TEAM1_PLAYERS).map((name) => {
+                    const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
+                    return (
+                      <li key={name}>
+                        {name}: 18HCP {handicap.eighteenHole} / 1v1 {getSinglesNineHoleHandicap(handicap.eighteenHole)} / BB {getBestBallNineHoleHandicap(handicap.eighteenHole)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold">{TEAM2_NAME}</p>
+                <ul className="mt-2 space-y-1">
+                  {Object.values(TEAM2_PLAYERS).map((name) => {
+                    const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
+                    return (
+                      <li key={name}>
+                        {name}: 18HCP {handicap.eighteenHole} / 1v1 {getSinglesNineHoleHandicap(handicap.eighteenHole)} / BB {getBestBallNineHoleHandicap(handicap.eighteenHole)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </div>
 

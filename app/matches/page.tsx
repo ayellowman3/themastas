@@ -165,7 +165,7 @@ export default function Matches() {
                                       {player.name} <span className="text-slate-400">#{player.number}</span>
                                     </p>
                                     <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">
-                                      HI {player.handicapIndex} · 9HCP {isSinglesMatch ? player.singlesNineHoleHandicap : player.bestBallNineHoleHandicap}
+                                      18HCP {player.eighteenHoleHandicap} · 9HCP {isSinglesMatch ? player.singlesNineHoleHandicap : player.bestBallNineHoleHandicap}
                                     </p>
                                   </div>
                                 ))}
@@ -181,7 +181,7 @@ export default function Matches() {
                                       {player.name} <span className="text-slate-400">#{player.number}</span>
                                     </p>
                                     <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">
-                                      HI {player.handicapIndex} · 9HCP {isSinglesMatch ? player.singlesNineHoleHandicap : player.bestBallNineHoleHandicap}
+                                      18HCP {player.eighteenHoleHandicap} · 9HCP {isSinglesMatch ? player.singlesNineHoleHandicap : player.bestBallNineHoleHandicap}
                                     </p>
                                   </div>
                                 ))}
@@ -193,9 +193,9 @@ export default function Matches() {
                             <div className="rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950">
                               <Scorecard
                                 pairingId={pairing.id}
-                                courseName={`${match.course} - ${match.nine}`}
+                                courseName={`Match ${match.round} · ${match.course} - ${match.nine}`}
                                 data={getScorecard(match.course, match.nine)}
-                                format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
+                                format={match.format.includes('Scramble') ? 'scramble' : isSinglesMatch ? 'singles' : 'best-ball'}
                                 team1Players={team1Players}
                                 team2Players={team2Players}
                                 team1PlayerHandicaps={getPlayerNineHoleHandicaps(team1Players, isSinglesMatch ? 'singles' : 'best-ball')}
@@ -228,9 +228,9 @@ export default function Matches() {
                               <div className={`pairing-print-scorecard ${match.format.includes('Scramble') ? 'print-scramble-card' : ''} rounded-[20px] border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-2 sm:rounded-[24px] sm:p-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-950`}>
                                 <Scorecard
                                   pairingId={pairing.id}
-                                  courseName={`${match.course} - ${match.nine}`}
+                                  courseName={`Match ${match.round} · ${match.course} - ${match.nine}`}
                                   data={getScorecard(match.course, match.nine)}
-                                  format={match.format.includes('Scramble') ? 'scramble' : 'best-ball'}
+                                  format={match.format.includes('Scramble') ? 'scramble' : isSinglesMatch ? 'singles' : 'best-ball'}
                                   printCompact
                                   printCompactMatchup={
                                     match.format.includes('Scramble')

@@ -102,12 +102,12 @@ function seedTournamentData(database: DatabaseSync) {
 
   for (const [number, name] of Object.entries(TEAM1_PLAYERS)) {
     const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
-    insertPlayer.run(`team1-${number}`, 'team1', Number(number), name, handicap.index, handicap.bestBallNineHole);
+    insertPlayer.run(`team1-${number}`, 'team1', Number(number), name, handicap.eighteenHole, Math.round((handicap.eighteenHole * 0.9) / 2));
   }
 
   for (const [number, name] of Object.entries(TEAM2_PLAYERS)) {
     const handicap = PLAYER_HANDICAPS[name as keyof typeof PLAYER_HANDICAPS];
-    insertPlayer.run(`team2-${number}`, 'team2', Number(number), name, handicap.index, handicap.bestBallNineHole);
+    insertPlayer.run(`team2-${number}`, 'team2', Number(number), name, handicap.eighteenHole, Math.round((handicap.eighteenHole * 0.9) / 2));
   }
 
   const insertMatch = database.prepare(`

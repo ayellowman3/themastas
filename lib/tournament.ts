@@ -24,15 +24,13 @@ export interface MatchSeed {
 }
 
 export interface PlayerHandicap {
-  index: number;
-  singlesNineHole: number;
-  bestBallNineHole: number;
+  eighteenHole: number;
 }
 
 export interface PairingPlayerDetail {
   number: string;
   name: string;
-  handicapIndex: number;
+  eighteenHoleHandicap: number;
   singlesNineHoleHandicap: number;
   bestBallNineHoleHandicap: number;
 }
@@ -59,19 +57,31 @@ export const TEAM2_PLAYERS = {
 } as const;
 
 export const PLAYER_HANDICAPS: Record<string, PlayerHandicap> = {
-  Kyung: { index: 7, singlesNineHole: 7, bestBallNineHole: 6 },
-  Tommy: { index: 12, singlesNineHole: 12, bestBallNineHole: 10 },
-  George: { index: 12, singlesNineHole: 12, bestBallNineHole: 10 },
-  Justin: { index: 14, singlesNineHole: 14, bestBallNineHole: 12 },
-  Paul: { index: 13, singlesNineHole: 13, bestBallNineHole: 12 },
-  Stephen: { index: 17, singlesNineHole: 17, bestBallNineHole: 15 },
-  'Min Woo': { index: 10, singlesNineHole: 10, bestBallNineHole: 9 },
-  Andy: { index: 11, singlesNineHole: 11, bestBallNineHole: 9 },
-  Terry: { index: 12, singlesNineHole: 12, bestBallNineHole: 10 },
-  Huey: { index: 17, singlesNineHole: 17, bestBallNineHole: 15 },
-  Alex: { index: 16, singlesNineHole: 16, bestBallNineHole: 14 },
-  Sam: { index: 17, singlesNineHole: 17, bestBallNineHole: 15 },
+  Kyung: { eighteenHole: 13 },
+  Tommy: { eighteenHole: 25 },
+  George: { eighteenHole: 24 },
+  Justin: { eighteenHole: 29 },
+  Paul: { eighteenHole: 29 },
+  Stephen: { eighteenHole: 32 },
+  'Min Woo': { eighteenHole: 21 },
+  Andy: { eighteenHole: 23 },
+  Terry: { eighteenHole: 27 },
+  Huey: { eighteenHole: 31 },
+  Alex: { eighteenHole: 32 },
+  Sam: { eighteenHole: 34 },
 };
+
+function roundNineHoleHandicap(value: number) {
+  return Math.round(value);
+}
+
+export function getSinglesNineHoleHandicap(eighteenHole: number) {
+  return roundNineHoleHandicap(eighteenHole / 2);
+}
+
+export function getBestBallNineHoleHandicap(eighteenHole: number) {
+  return roundNineHoleHandicap((eighteenHole * 0.9) / 2);
+}
 
 export const SCORECARD_DATA: Record<'riversaints' | 'lakes', ScorecardData> = {
   riversaints: {
@@ -103,7 +113,7 @@ export const MATCHES: MatchSeed[] = [
   },
   {
     round: 2,
-    course: 'Lakes',
+    course: 'River',
     nine: 'Front 9',
     format: '2-man Scramble',
     pairings: [
@@ -138,47 +148,61 @@ export const MATCHES: MatchSeed[] = [
     round: 5,
     course: 'Lakes',
     nine: 'Back 9',
-    format: '2-man Best Ball',
+    format: '1v1 - Singles',
     pairings: [
-      { id: 'm5-p1', team1: '#3 & #6', team2: '#2 & #3', team1Score: 1, team2Score: 0 },
-      { id: 'm5-p2', team1: '#2 & #4', team2: '#1 & #5', team1Score: 0, team2Score: 1 },
-      { id: 'm5-p3', team1: '#1 & #5', team2: '#4 & #6', team1Score: 0, team2Score: 1 },
+      { id: 'm5-p1', team1: '#1', team2: '#2', team1Score: null, team2Score: null },
+      { id: 'm5-p2', team1: '#2', team2: '#1', team1Score: null, team2Score: null },
+      { id: 'm5-p3', team1: '#3', team2: '#4', team1Score: null, team2Score: null },
+      { id: 'm5-p4', team1: '#4', team2: '#3', team1Score: null, team2Score: null },
+      { id: 'm5-p5', team1: '#5', team2: '#6', team1Score: null, team2Score: null },
+      { id: 'm5-p6', team1: '#6', team2: '#5', team1Score: null, team2Score: null },
     ],
   },
   {
     round: 6,
     course: 'River',
     nine: 'Front 9',
-    format: '2-man Scramble',
+    format: '2-man Best Ball',
     pairings: [
-      { id: 'm6-p1', team1: '#2 & #5', team2: '#3 & #4', team1Score: null, team2Score: null },
-      { id: 'm6-p2', team1: '#1 & #6', team2: '#2 & #5', team1Score: null, team2Score: null },
-      { id: 'm6-p3', team1: '#3 & #4', team2: '#1 & #6', team1Score: null, team2Score: null },
+      { id: 'm6-p1', team1: '#3 & #6', team2: '#2 & #3', team1Score: 1, team2Score: 0 },
+      { id: 'm6-p2', team1: '#2 & #4', team2: '#1 & #5', team1Score: 0, team2Score: 1 },
+      { id: 'm6-p3', team1: '#1 & #5', team2: '#4 & #6', team1Score: 0, team2Score: 1 },
     ],
   },
   {
     round: 7,
     course: 'River',
-    nine: 'Back 9',
+    nine: 'Front 9',
     format: '2-man Scramble',
     pairings: [
-      { id: 'm7-p1', team1: '#1 & #3', team2: '#1 & #3', team1Score: null, team2Score: null },
-      { id: 'm7-p2', team1: '#4 & #6', team2: '#4 & #6', team1Score: null, team2Score: null },
-      { id: 'm7-p3', team1: '#2 & #5', team2: '#2 & #5', team1Score: null, team2Score: null },
+      { id: 'm7-p1', team1: '#2 & #5', team2: '#3 & #4', team1Score: null, team2Score: null },
+      { id: 'm7-p2', team1: '#1 & #6', team2: '#2 & #5', team1Score: null, team2Score: null },
+      { id: 'm7-p3', team1: '#3 & #4', team2: '#1 & #6', team1Score: null, team2Score: null },
     ],
   },
   {
     round: 8,
     course: 'River',
     nine: 'Front 9',
+    format: '2-man Scramble',
+    pairings: [
+      { id: 'm8-p1', team1: '#1 & #3', team2: '#1 & #3', team1Score: null, team2Score: null },
+      { id: 'm8-p2', team1: '#4 & #6', team2: '#4 & #6', team1Score: null, team2Score: null },
+      { id: 'm8-p3', team1: '#2 & #5', team2: '#2 & #5', team1Score: null, team2Score: null },
+    ],
+  },
+  {
+    round: 9,
+    course: 'River',
+    nine: 'Back 9',
     format: '1v1 - Singles',
     pairings: [
-      { id: 'm8-p1', team1: '#1', team2: '#1', team1Score: null, team2Score: null },
-      { id: 'm8-p2', team1: '#2', team2: '#2', team1Score: null, team2Score: null },
-      { id: 'm8-p3', team1: '#3', team2: '#3', team1Score: null, team2Score: null },
-      { id: 'm8-p4', team1: '#4', team2: '#4', team1Score: null, team2Score: null },
-      { id: 'm8-p5', team1: '#5', team2: '#5', team1Score: null, team2Score: null },
-      { id: 'm8-p6', team1: '#6', team2: '#6', team1Score: null, team2Score: null },
+      { id: 'm9-p1', team1: '#1', team2: '#1', team1Score: null, team2Score: null },
+      { id: 'm9-p2', team1: '#2', team2: '#2', team1Score: null, team2Score: null },
+      { id: 'm9-p3', team1: '#3', team2: '#3', team1Score: null, team2Score: null },
+      { id: 'm9-p4', team1: '#4', team2: '#4', team1Score: null, team2Score: null },
+      { id: 'm9-p5', team1: '#5', team2: '#5', team1Score: null, team2Score: null },
+      { id: 'm9-p6', team1: '#6', team2: '#6', team1Score: null, team2Score: null },
     ],
   },
 ];
@@ -232,9 +256,9 @@ export function getPairingPlayerDetails(playerString: string, teamPlayers: Recor
     players.push({
       number,
       name,
-      handicapIndex: handicap.index,
-      singlesNineHoleHandicap: handicap.singlesNineHole,
-      bestBallNineHoleHandicap: handicap.bestBallNineHole,
+      eighteenHoleHandicap: handicap.eighteenHole,
+      singlesNineHoleHandicap: getSinglesNineHoleHandicap(handicap.eighteenHole),
+      bestBallNineHoleHandicap: getBestBallNineHoleHandicap(handicap.eighteenHole),
     });
   }
 
@@ -245,7 +269,9 @@ export function getPlayerNineHoleHandicaps(players: string[], matchType: 'single
   return players.reduce<Record<string, number>>((acc, player) => {
     const handicap = PLAYER_HANDICAPS[player as keyof typeof PLAYER_HANDICAPS];
     if (handicap) {
-      acc[player] = matchType === 'singles' ? handicap.singlesNineHole : handicap.bestBallNineHole;
+      acc[player] = matchType === 'singles'
+        ? getSinglesNineHoleHandicap(handicap.eighteenHole)
+        : getBestBallNineHoleHandicap(handicap.eighteenHole);
     }
     return acc;
   }, {});
